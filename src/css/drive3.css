@@ -1,0 +1,23 @@
+.App {
+    font-family: 'Montserrat' !important;
+}
+
+/* _lg */
+@media only screen and (max-width: 1440px) {
+
+}
+
+/* _md */
+@media only screen and (max-width: 1020px) {
+
+}
+
+/* _sm */
+@media only screen and (max-width: 840px) {
+
+}
+
+/* _mobile */
+@media only screen and (max-width: 500px) {
+
+}
