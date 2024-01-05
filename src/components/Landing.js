@@ -4,6 +4,12 @@ import '../css/animations.css';
 
 import Navbar from './Landing/Navbar';
 import Home from './Landing/Home';
+import Benefits from './Landing/Benefits';
+import Purpose from './Landing/Purpose';
+import People from './Landing/People';
+import Joinnow from './Landing/Joinnow';
+import Subscribe from './Landing/Subscribe';
+import Footer from './Landing/Footer';
 
 function Landing () {
     return (
@@ -19,6 +25,12 @@ function Landing () {
         {/* Main sections */}
         <Navbar />
         <Home />
+        <Benefits />
+        <Purpose />
+        <People />
+        <Joinnow />
+        <Subscribe />
+        <Footer />
       </div>
     );
 }
