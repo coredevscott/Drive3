@@ -9,7 +9,7 @@ const wallets = [
   {imgSrc: "./img/people1.png", title:"Eleanor Pena", content:"Total Tokens: $58,000 USDT", index: "06"},
   {imgSrc: "./img/people2.png", title:"Courtney Henry", content: "Total Tokens: $58,000 USDT", index: "07"}, 
   {imgSrc: "./img/people3.png", title:"Kristin Watson", content:"Total Tokens: $58,000 USDT", index: "08"}, 
-  {imgSrc: "./img/people4np.png", title:"Devon Lane", content:"Total Tokens: $58,000 USDT", index: "09"},
+  {imgSrc: "./img/people4.png", title:"Devon Lane", content:"Total Tokens: $58,000 USDT", index: "09"},
 ];
 
 export default function People() {
