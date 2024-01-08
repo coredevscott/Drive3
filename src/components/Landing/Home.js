@@ -16,13 +16,13 @@ const wallets = [
 
 export default function Home() {
     return (
-      <div className="relative py-24 text-white bg-transparent fadeInUp sm:py-32">
+      <div className="relative z-0 py-24 text-white bg-transparent fadeInUp sm:py-32">
         <div className="flex flex-col items-center justify-center gap-10 px-6 mx-auto max-w-7xl lg:px-8">
           <h2 className="text-4xl font-bold text-center sm:text-7xl">
             Interactive storage application compactible with multiple networks
           </h2>
           <div className="max-w-xl text-[#898CA9]">On Drive3, security and privacy are not a choice, but a standard. Everyone can securely store data privately by online.</div>
-          <button className='px-10 py-4 font-medium text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]'>Get Started</button>
+          <a href="/storage"><button className='px-10 py-4 font-medium text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]'>Get Started</button></a>
           <div className="grid items-center max-w-lg grid-cols-2 mx-auto mt-10 sm:grid-cols-4 gap-x-8 gap-y-10 sm:max-w-xl sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-8">   
             {
                 wallets.map((item) => (
@@ -37,9 +37,9 @@ export default function Home() {
             }
           </div>
           <div className='flex flex-row gap-5 text-white'>
-            <FaXTwitter className='w-6 h-6'/>
-            <PiTelegramLogo className='w-6 h-6'/>
-            <FiGithub  className='w-6 h-6'/>
+            <FaXTwitter className='w-6 h-6 cursor-pointer hover:translate-y-[-5px] transition-transform duration-700'/>
+            <PiTelegramLogo className='w-6 h-6 cursor-pointer hover:translate-y-[-5px] transition-transform duration-700'/>
+            <FiGithub  className='w-6 h-6 cursor-pointer hover:translate-y-[-5px] transition-transform duration-700'/>
           </div>
         </div>
       </div>
