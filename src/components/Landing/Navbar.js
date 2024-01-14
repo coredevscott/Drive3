@@ -28,8 +28,10 @@ export default function Navbar() {
   const {signed, setSigned, network, setNetwork, address, setAddress} = useContext(MyContext);
 
   useEffect(() => {
-    if(account.address)
+    if(account.address) {
+      setAddress(account.address);
       setSigned(1);
+    }
     else
       setSigned(0);
   }, [account.address]);

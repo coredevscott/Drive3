@@ -8,7 +8,7 @@ import MyContext from '../../MyContext';
 const chainlist = [
   { name: 'EVM Chains' },
   { name: 'Bitcoin' },
-  { name: 'Solana' },
+  // { name: 'Solana' },
 ]
 
 export default function NetworkSelect() {

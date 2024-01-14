@@ -2,6 +2,7 @@ import '../../css/animations.css';
 import { FaXTwitter } from "react-icons/fa6";
 import { PiTelegramLogo } from "react-icons/pi";
 import { FiGithub } from "react-icons/fi";
+import { Link } from 'react-router-dom';
 
 const wallets = [
   {imgSrc: "./img/wallet1.png"}, 
@@ -22,7 +23,7 @@ export default function Home() {
             Interactive storage application compactible with multiple networks
           </h2>
           <div className="max-w-xl text-[#898CA9]">On Drive3, security and privacy are not a choice, but a standard. Everyone can securely store data privately by online.</div>
-          <a href="/storage"><button className='px-10 py-4 font-medium text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]'>Get Started</button></a>
+          <Link to="/storage"><button className='px-10 py-4 font-medium text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]'>Get Started</button></Link>
           <div className="grid items-center max-w-lg grid-cols-2 mx-auto mt-10 sm:grid-cols-4 gap-x-8 gap-y-10 sm:max-w-xl sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-8">   
             {
                 wallets.map((item) => (
