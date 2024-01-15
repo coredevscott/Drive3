@@ -1,9 +1,11 @@
 import '../../css/animations.css';
 import { LuUpload } from "react-icons/lu";
 import { FaXTwitter } from "react-icons/fa6";
+import { FaDownload } from "react-icons/fa";
 import { PiTelegramLogo } from "react-icons/pi";
 import { FiGithub } from "react-icons/fi";
 import { useEffect, useState } from 'react';
+import { MdDelete } from "react-icons/md";
 
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import axios from 'axios';
@@ -18,11 +20,14 @@ export default function Home() {
     var initFlag = 0;
     const [flag, setFlag] = useState(0);
     const [showModal, setShowModal] = useState(0);
+    const [uploadFlag, setUploadFlag] = useState(0);
 
-    // Rest Api respoinse
+    // Rest Api response
     const [challenge, setChallenge] = useState("");
     const [accessToken, setAccessToken] = useState("");
     const [refreshToken, setRefreshToken] = useState("");
+    const [fileList, setFileList] = useState([]);
+    const [tableContent, setTableContent] = useState([]);
 
     // Global variables
     const {signed, setSigned, network, setNetwork, address, setAddress} = useContext(MyContext);
@@ -33,7 +38,6 @@ export default function Home() {
 
     // Redirect if wallet not connected
     if(signed == 0) {
-      // alert("Please connect your wallet first!");
       window.location.href = '/';
     }
 
@@ -81,14 +85,14 @@ export default function Home() {
         console.log('-----login request-----');
         console.log(challenge);
         console.log(data);
-        console.log(headers);
 
         axios.post('https://api.mefs.io:10000/test/login',
           headers
         )
         .then((response) => {
-          console.log('-----login respoinse-----');
+          console.log('-----login response-----');
           console.log(response);
+
           setAccessToken(response.data.accessToken);
           setRefreshToken(response.data.refreshToken);
         })
@@ -98,14 +102,58 @@ export default function Home() {
       }
     }, [isSuccess]);
 
-    const handleFileUpload = async () => {
+    // Get File list
+    useEffect(() => {
+      const request_headers = {
+        'Authorization': 'Bearer ' + accessToken
+      };
+
+      axios.get('https://api.mefs.io:10000/test/mefs/listobjects',
+        {headers: request_headers}
+      )
+      .then((response) => {
+        console.log('-----get file list respoinse-----');
+        console.log(response);
+
+        setFileList(response.data.Objects);
+      })
+      .catch((error) => {
+          console.error(error); 
+      });
+    }, [accessToken, uploadFlag]);
+
+    // Display File List
+    useEffect(() => {
+      var content = [];
+
+      for(let i = 0; i < fileList.length; i ++) {
+        content = [...content, (
+          <div className='flex flex-row items-center w-full py-5'>
+            <div className='w-1/4 text-white'>{fileList[i].Name}</div>
+            <div className='w-1/4 text-white'>{fileList[i].ModTime}</div>
+            <div className='w-1/4 text-white'>{fileList[i].Mid.slice(0, 14) + '...'}</div>
+            <div className='w-1/4 text-white'>{(fileList[i].Size % 1000) + 'KB'}</div>
+            <div className='flex flex-row items-center justify-center w-1/4 gap-5 text-white'>
+              <div onClick={() => handleFileDelete(fileList[i].Mid)}><MdDelete className='w-6 h-6 text-white'/></div>
+              <a href={'https://api.mefs.io:10000/test/mefs/' + fileList[i].Mid} target='_blank'><FaDownload className='w-5 h-5 text-white'/></a>
+            </div>
+          </div>
+        )];
+      }
+      
+      setTableContent(content);
+
+    }, [fileList]);
+
+    // File upload
+    const handleFileUpload = () => {
       const fileInput = document.getElementById('file-input');
       const file = fileInput.files[0];
     
-      console.log('-------upload start--------');
+      console.log('-----file name to upload-----');
       console.log(file.name);
 
-      const headers = {
+      const request_headers = {
         'Content-Type': 'multipart/form-data',
         'Authorization': 'Bearer ' + accessToken
       };
@@ -118,25 +166,40 @@ export default function Home() {
         formData.append('file', file);
 
         axios.post('https://api.mefs.io:10000/test/mefs/', formData, 
-          headers
+          {headers: request_headers}
         )
         .then((response) => {
+          console.log('-----file upload response-----');
+          console.log(response);
+
+          setUploadFlag(1 - uploadFlag);
+          alert("File Successfully Uploaded!\nMid: " + response.data.Mid);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+      }
+    };
+
+    // File Delete
+    const handleFileDelete = (fileMid) => {
+      console.log('-----file delete request-----');
+      console.log(fileMid);
+
+      const request_headers = {
+        'Authorization': 'Bearer ' + accessToken
+      };
+
+        axios.get('https://api.mefs.io:10000/test/mefs/delete?mid=' + fileMid,
+          {headers: request_headers}
+        )
+        .then((response) => {
+          console.log('-----file delete response-----');
           console.log(response);
         })
         .catch((error) => {
             console.error(error);
         });
-    
-        // try {
-        //   const response = await axios.post('https://api.mefs.io:10000/test/mefs/', formData, headers);
-    
-        //   console.log('File upload Response-----------------------', response);
-        //   // Handle the response
-        // } catch (error) {
-        //   console.error('Error:', error);
-        //   // Handle the error
-        // }
-      }
     };
 
     return (
@@ -180,8 +243,8 @@ export default function Home() {
               <div className='w-1/4 text-white'>Size of File</div>
               <div className='w-1/4 text-white'>Operate</div>
             </div>
-            <div className='bg-[#1A1B23] rounded-xl h-[450px] w-[1200px]'>
-
+            <div className='bg-[#1A1B23] rounded-xl h-[450px] w-[1200px] overflow-x-hidden'>
+              {tableContent}
             </div>
           </div>
           <div className='flex flex-row items-center justify-center w-full gap-5 mt-10 text-white'>
