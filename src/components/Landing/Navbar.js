@@ -71,7 +71,7 @@ export default function Navbar() {
                   </a>
                 </div>
                 <div className='flex flex-row items-center font-medium gap-7'>
-                    <div className='hidden px-2 py-1 text-white border border-white rounded-md sm:block'>Docs</div>
+                    <div className='hidden px-2 py-1 text-white border-white rounded-md sm:block'>Docs</div>
                     {signed == 0 ?
                     (<NetworkSelect />) : (<></>)}
 

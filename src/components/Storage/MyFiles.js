@@ -1,3 +1,4 @@
+import * as React from 'react'
 import '../../css/animations.css';
 import { LuUpload } from "react-icons/lu";
 import { FaXTwitter } from "react-icons/fa6";
@@ -6,6 +7,7 @@ import { PiTelegramLogo } from "react-icons/pi";
 import { FiGithub } from "react-icons/fi";
 import { useEffect, useState } from 'react';
 import { MdDelete } from "react-icons/md";
+import { IoMdShare } from "react-icons/io";
 
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import axios from 'axios';
@@ -17,12 +19,13 @@ import MyContext from '../../MyContext';
 
 export default function Home() {
     // UseEffect flags
-    var initFlag = 0;
-    const [flag, setFlag] = useState(0);
+    var initFlag = 0; // Prevent useEffect call twice when get challenge text
+    const [flag, setFlag] = useState(0);  //Prevent walletSign twice
     const [showModal, setShowModal] = useState(0);
-    const [uploadFlag, setUploadFlag] = useState(0);
+    const [uploadFlag, setUploadFlag] = useState(0);  // Refresh table when upload finished
 
     // Rest Api response
+    const [uploadStatus, setUploadStatus] = useState("Please select file and press upload button to start file uploading");
     const [challenge, setChallenge] = useState("");
     const [accessToken, setAccessToken] = useState("");
     const [refreshToken, setRefreshToken] = useState("");
@@ -30,7 +33,7 @@ export default function Home() {
     const [tableContent, setTableContent] = useState([]);
 
     // Global variables
-    const {signed, setSigned, network, setNetwork, address, setAddress} = useContext(MyContext);
+    const {authToken, setAuthToken, signed, setSigned, network, setNetwork, address, setAddress} = useContext(MyContext);
 
     const { data, isError, isLoading, isSuccess, signMessage } = useSignMessage({
       message: challenge,
@@ -93,6 +96,7 @@ export default function Home() {
           console.log('-----login response-----');
           console.log(response);
 
+          setAuthToken(response.data.accessToken);  // Set Global Variable for Auth
           setAccessToken(response.data.accessToken);
           setRefreshToken(response.data.refreshToken);
         })
@@ -134,8 +138,9 @@ export default function Home() {
             <div className='w-1/4 text-white'>{fileList[i].Mid.slice(0, 14) + '...'}</div>
             <div className='w-1/4 text-white'>{(fileList[i].Size % 1000) + 'KB'}</div>
             <div className='flex flex-row items-center justify-center w-1/4 gap-5 text-white'>
-              <div onClick={() => handleFileDelete(fileList[i].Mid)}><MdDelete className='w-6 h-6 text-white'/></div>
-              <a href={'https://api.mefs.io:10000/test/mefs/' + fileList[i].Mid} target='_blank'><FaDownload className='w-5 h-5 text-white'/></a>
+              <div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>
+              <div onClick={() => handleFileDelete(fileList[i].Mid)}><MdDelete className='w-6 h-6 text-white cursor-pointer'/></div>
+              <div><IoMdShare className='w-6 h-6 text-white cursor-pointer' /></div>
             </div>
           </div>
         )];
@@ -150,20 +155,19 @@ export default function Home() {
       const fileInput = document.getElementById('file-input');
       const file = fileInput.files[0];
     
-      console.log('-----file name to upload-----');
-      console.log(file.name);
-
       const request_headers = {
         'Content-Type': 'multipart/form-data',
         'Authorization': 'Bearer ' + accessToken
       };
 
-      console.log('-----headers----');
-      console.log('Bearer ' + accessToken);
+      console.log('-----file name to upload-----');
+      console.log(file.name);
 
       if (file) {
         const formData = new FormData();
         formData.append('file', file);
+
+        setUploadStatus("Uploading ...");
 
         axios.post('https://api.mefs.io:10000/test/mefs/', formData, 
           {headers: request_headers}
@@ -172,13 +176,46 @@ export default function Home() {
           console.log('-----file upload response-----');
           console.log(response);
 
+          setUploadStatus("File Successfully Uploaded - Mid: " + response.data.Mid.slice(0, 15) + '...');
           setUploadFlag(1 - uploadFlag);
-          alert("File Successfully Uploaded!\nMid: " + response.data.Mid);
         })
         .catch((error) => {
             console.error(error);
         });
       }
+    };
+
+    // Download File
+    const handleDownload = (fileName, fileMid) => {
+      console.log('-----file download request-----');
+      console.log(fileMid);
+
+      const url = 'https://api.mefs.io:10000/test/mefs/' + fileMid;
+      const request_headers = {
+        'Authorization': 'Bearer ' + accessToken
+      };
+  
+      axios({
+        url: url,
+        method: 'GET',
+        responseType: 'blob',
+        headers: request_headers
+      })
+        .then(response => {
+          console.log('-----file download response-----');
+          console.log(response);
+          
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', fileName);
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
     };
 
     // File Delete
@@ -212,10 +249,18 @@ export default function Home() {
                     <XMarkIcon onClick={() => setShowModal(0)} className='absolute w-6 h-6 cursor-pointer top-3 right-3'/>
                     <div className='text-2xl font-bold text-left'>Upload</div>
                     <input type="file" id="file-input" className='mt-8'/>
+                    <div className='flex flex-row items-center justify-center gap-5 mt-10'>
+                      <div className='text-white text-md sm:text-lg'>Status:</div>
+                      {
+                        uploadStatus != "Uploading" ? (<div className='text-sm text-white sm:text-md'>
+                          {uploadStatus}
+                        </div>) : (<i className="fa fa-spinner fa-spin"></i>)
+                      }
+                    </div>
                     {/* <div className='bg-[#444754] border border-dotted border-[#979797] rounded-xl h-[100px] mt-10 w-full text-[#898CA9] justify-center items-center flex'>Drag and drop files here</div> */}
                     <div className='flex flex-row justify-center gap-5 mt-10'>
                       <button className='px-7 py-2 font-medium text-white rounded-xl bg-transparent border border-white from-[#933FFE] w-[150px] to-[#18C8FF]' onClick={() => setShowModal(0)}>Close</button>
-                      <button className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF] w-[150px]' onClick={handleFileUpload}>Upload</button>                
+                      <button className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF] w-[150px]' onClick={handleFileUpload}>Upload</button>
                     </div>
                 </div>        
             </div>
@@ -228,7 +273,7 @@ export default function Home() {
           <div className='flex flex-row justify-between w-full mt-10'>
             <div className='flex flex-col gap-5 sm:flex-row'>
               <button className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF]'>Private Files</button>
-              <button className='px-7 py-2 font-medium text-white rounded-xl bg-transparent border border-white from-[#933FFE] to-[#18C8FF]'>Public Files</button>
+              <button className='px-7 py-2 font-medium text-white rounded-xl bg-[#18C8FF] bg-opacity-20 hover:bg-opacity-30'>Public Files</button>
             </div>
             <div className='flex flex-row gap-3 items-center text-[#B982FF] font-medium cursor-pointer' onClick={() => setShowModal(1)}>
               <LuUpload className='w-5 h-5'/>

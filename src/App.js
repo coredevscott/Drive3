@@ -10,9 +10,10 @@ const MyProvider = ({ children }) => {
   const [network, setNetwork] = useState("EVM Chains");
   const [signed, setSigned] = useState(0);
   const [address, setAddress] = useState("");
+  const [authToken, setAuthToken] = useState("");
 
   return (
-    <MyContext.Provider value={{ signed, setSigned, network, setNetwork, address, setAddress}}>
+    <MyContext.Provider value={{ signed, setSigned, network, setNetwork, address, setAddress, authToken, setAuthToken}}>
       {children}
     </MyContext.Provider>
   );
