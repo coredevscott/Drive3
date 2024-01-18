@@ -167,7 +167,7 @@ export default function Navbar() {
                         Connect Wallet
                       </button>) : (<></>)}
                     {network == "Bitcoin" && signed == 1 ? 
-                      (<div className='px-5 py-1 w-[200px] text-white border border-white rounded-md'>{address.slice(0, 15)}</div>) : (<></>)}
+                      (<div className='px-5 py-1 w-[200px] text-white border border-white rounded-md'>{address.slice(0, 7) + ' ... ' + address.slice(address.length - 8, address.length - 1)}</div>) : (<></>)}
                 </div>
               </div>
             </div>

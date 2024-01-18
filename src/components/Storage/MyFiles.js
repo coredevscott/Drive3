@@ -21,7 +21,7 @@ export default function Home() {
     // UseEffect flags
     var initFlag = 0; // Prevent useEffect call twice when get challenge text
     const [flag, setFlag] = useState(0);  //Prevent walletSign twice
-    const [showModal, setShowModal] = useState(0);
+    const [showModal, setShowModal] = useState(0);  // Upload modal flag
     const [uploadFlag, setUploadFlag] = useState(0);  // Refresh table when upload finished
 
     // Rest Api response
@@ -39,12 +39,14 @@ export default function Home() {
       message: challenge,
     });
 
+    const [btcSignMsg, setBtcSignMSg] = useState("");
+
     // Redirect if wallet not connected
     if(signed == 0) {
       window.location.href = '/';
     }
 
-    // Get Challenge text
+    // Step 1. Get Challenge text
     useEffect(() => {
       if(signed == 1) {
         const headers = {
@@ -54,30 +56,57 @@ export default function Home() {
         if(challenge == "" && initFlag == 0){
           initFlag = 1;
 
-          axios.get('https://api.mefs.io:10000/test/challenge?address=' + address + '&' + 'chainid=1', { 
-            headers
-          })
-          .then((response) => {
-            setChallenge(response.data);
-          })
-          .catch((error) => {
-              console.error(error);
-          });
+          if(network == "EVM Chains"){
+            axios.get('https://api.mefs.io:10000/test/challenge?address=' + address + '&' + 'chainid=1', { 
+              headers
+            })
+            .then((response) => {
+              setChallenge(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+          }
+          else if(network == "Bitcoin") {
+            axios.get('https://api.mefs.io:10000/test/btc/challenge?address=' + address, { 
+              headers
+            })
+            .then((response) => {
+              setChallenge(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+          }
         }
       }
     }, []);
 
-    // Wallet sign
+    // Step 2. Wallet sign
     useEffect(() => {
       if(challenge != "" && flag == 0) { 
-        signMessage();
+        if(network == "EVM Chains") {
+          signMessage();
+        }
+        else if(network == "Bitcoin") {
+          async function signMessageAsync() {
+            try {
+              let res = await window.unisat.signMessage(challenge);
+              setBtcSignMSg(res);
+            } catch (e) {
+              console.log(e);
+            }
+          }
+
+          signMessageAsync();
+        }
         setFlag(1);
       }
     }, [challenge]);
 
-    // Get signature
+    // Step 3. Get signature
     useEffect(() => {
-      if(isSuccess == true) {
+      if(isSuccess == true) { // EVM Chain Wallet Sign
         const headers = {
           "message": challenge,
           "signature": data,
@@ -87,7 +116,7 @@ export default function Home() {
 
         console.log('-----login request-----');
         console.log(challenge);
-        console.log(data);
+        console.log(data);  //signature
 
         axios.post('https://api.mefs.io:10000/test/login',
           headers
@@ -104,53 +133,83 @@ export default function Home() {
             console.error(error);
         });
       }
-    }, [isSuccess]);
+      else if(btcSignMsg != "") { //Unisat wallet Sign
+        const headers = {
+          "message": challenge,
+          "signature": btcSignMsg,
+          "recommender": null,
+          "source": null
+        };
 
-    // Get File list
+        console.log('-----btc login request-----');
+        console.log(challenge);
+        console.log(btcSignMsg);
+
+        axios.post('https://api.mefs.io:10000/test/btc/login',
+          headers
+        )
+        .then((response) => {
+          console.log('-----btc login response-----');
+          console.log(response);
+
+          setAuthToken(response.data.accessToken);  // Set Global Variable for Auth
+          setAccessToken(response.data.accessToken);
+          setRefreshToken(response.data.refreshToken);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+      }
+    }, [isSuccess, btcSignMsg]);
+
+    // Step 4. Get File list
     useEffect(() => {
       const request_headers = {
         'Authorization': 'Bearer ' + accessToken
       };
 
-      axios.get('https://api.mefs.io:10000/test/mefs/listobjects',
-        {headers: request_headers}
-      )
-      .then((response) => {
-        console.log('-----get file list respoinse-----');
-        console.log(response);
+      if(accessToken != "") {
+        axios.get('https://api.mefs.io:10000/test/mefs/listobjects',
+          {headers: request_headers}
+        )
+        .then((response) => {
+          console.log('-----get file list respoinse-----');
+          console.log(response);
 
-        setFileList(response.data.Objects);
-      })
-      .catch((error) => {
-          console.error(error); 
-      });
+          setFileList(response.data.Objects);
+        })
+        .catch((error) => {
+            console.error(error); 
+        });
+      }
     }, [accessToken, uploadFlag]);
 
     // Display File List
     useEffect(() => {
       var content = [];
 
-      for(let i = 0; i < fileList.length; i ++) {
-        content = [...content, (
-          <div className='flex flex-row items-center w-full py-5'>
-            <div className='w-1/4 text-white'>{fileList[i].Name}</div>
-            <div className='w-1/4 text-white'>{fileList[i].ModTime}</div>
-            <div className='w-1/4 text-white'>{fileList[i].Mid.slice(0, 14) + '...'}</div>
-            <div className='w-1/4 text-white'>{(fileList[i].Size % 1000) + 'KB'}</div>
-            <div className='flex flex-row items-center justify-center w-1/4 gap-5 text-white'>
-              <div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>
-              <div onClick={() => handleFileDelete(fileList[i].Mid)}><MdDelete className='w-6 h-6 text-white cursor-pointer'/></div>
-              <div><IoMdShare className='w-6 h-6 text-white cursor-pointer' /></div>
+      if(fileList != null){
+        for(let i = 0; i < fileList.length; i ++) {
+          content = [...content, (
+            <div className='flex flex-row items-center w-full py-5'>
+              <div className='w-1/4 text-white'>{fileList[i].Name}</div>
+              <div className='w-1/4 text-white'>{fileList[i].ModTime}</div>
+              <div className='w-1/4 text-white'>{fileList[i].Mid.slice(0, 14) + '...'}</div>
+              <div className='w-1/4 text-white'>{(fileList[i].Size % 1000) + 'KB'}</div>
+              <div className='flex flex-row items-center justify-center w-1/4 gap-5 text-white'>
+                <div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>
+                <div onClick={() => handleFileDelete(fileList[i].Mid)}><MdDelete className='w-6 h-6 text-white cursor-pointer'/></div>
+                <div><IoMdShare className='w-6 h-6 text-white cursor-pointer' /></div>
+              </div>
             </div>
-          </div>
-        )];
+          )];
+        }
       }
       
       setTableContent(content);
-
     }, [fileList]);
 
-    // File upload
+    // Step 5. File upload
     const handleFileUpload = () => {
       const fileInput = document.getElementById('file-input');
       const file = fileInput.files[0];
@@ -185,7 +244,7 @@ export default function Home() {
       }
     };
 
-    // Download File
+    // Step 6. Download File
     const handleDownload = (fileName, fileMid) => {
       console.log('-----file download request-----');
       console.log(fileMid);
@@ -218,7 +277,7 @@ export default function Home() {
         });
     };
 
-    // File Delete
+    // Step 7. File Delete
     const handleFileDelete = (fileMid) => {
       console.log('-----file delete request-----');
       console.log(fileMid);
