@@ -62,13 +62,13 @@ export default function Navbar() {
             <div className="relative flex items-center justify-between h-16">
               <div className="flex items-center justify-center flex-1 sm:items-stretch sm:justify-between">
                 <div className="flex items-center flex-shrink-0">
-                  <a href="/">
+                  {/* <a href="/"> */}
                     <img
-                      className="hidden w-auto sm:block h-7"
+                      className="hidden w-auto cursor-pointer sm:block h-7"
                       src="./img/logo.png"
                       alt="My logo"
                     />
-                  </a>
+                  {/* </a> */}
                 </div>
                 <div className='flex flex-row items-center font-medium gap-7'>
                     <div className='hidden px-2 py-1 text-white border-white rounded-md sm:block'>Docs</div>
