@@ -7,7 +7,8 @@ import MyContext from '../../MyContext';
 
 const chainlist = [
   { name: 'EVM Chains' },
-  { name: 'Bitcoin' },
+  { name: 'Bitcoin-Unisat' },
+  { name: 'Bitcoin-Bitget' },
   // { name: 'Solana' },
 ]
 

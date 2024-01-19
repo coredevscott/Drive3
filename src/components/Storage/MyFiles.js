@@ -67,11 +67,11 @@ export default function Home() {
                 console.error(error);
             });
           }
-          else if(network == "Bitcoin") {
+          else if(network == "Bitcoin-Unisat" || network == "Bitcoin-Bitget") {
             axios.get('https://api.mefs.io:10000/test/btc/challenge?address=' + address, { 
               headers
             })
-            .then((response) => {
+            .then((response) => { 
               setChallenge(response.data);
             })
             .catch((error) => {
@@ -88,11 +88,17 @@ export default function Home() {
         if(network == "EVM Chains") {
           signMessage();
         }
-        else if(network == "Bitcoin") {
+        else if(network == "Bitcoin-Unisat" || network == "Bitcoin-Bitget") {
           async function signMessageAsync() {
             try {
-              let res = await window.unisat.signMessage(challenge);
-              setBtcSignMSg(res);
+              if(network == "Bitcoin-Unisat") {
+                let res = await window.unisat.signMessage(challenge);
+                setBtcSignMSg(res);
+              }
+              else { 
+                let res = await window.bitkeep.unisat.signMessage(challenge);
+                setBtcSignMSg(res);
+              }              
             } catch (e) {
               console.log(e);
             }
@@ -133,7 +139,7 @@ export default function Home() {
             console.error(error);
         });
       }
-      else if(btcSignMsg != "") { //Unisat wallet Sign
+      else if(btcSignMsg != "") { //Unisat & Bitget wallet Sign
         const headers = {
           "message": challenge,
           "signature": btcSignMsg,

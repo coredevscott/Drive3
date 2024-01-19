@@ -4,6 +4,7 @@ import { FaAngleDown } from "react-icons/fa";
 
 import { useContext } from 'react'
 import MyContext from '../../MyContext';
+import { useState } from 'react';
 
 import {
   useAccount,
@@ -26,6 +27,8 @@ function classNames(...classes) {
 export default function Navbar() {
   const account = useAccount();
   const {signed, setSigned, network, setNetwork, address, setAddress} = useContext(MyContext);
+
+  const [walletType, setWalletType] = useState("Unisat");
 
   useEffect(() => {
     if(account.address) {
@@ -51,6 +54,26 @@ export default function Navbar() {
     }
     else{
       alert("Unisat Wallet does not installed!");
+    }
+  };
+
+  const connectToBitget = async () => {
+    const unisat = window.bitkeep.unisat;
+
+    if (typeof unisat !== 'undefined' && unisat !== null) {
+      try {
+        let accounts = await unisat.requestAccounts();
+        console.log('Bigget Wallet Connect Success!');
+
+        let res = await unisat.getAccounts();
+        setAddress(res[0]);
+        setSigned(1);
+      } catch (e) {
+        console.log('connect failed');
+      }
+    }
+    else{
+      alert("Bitget Wallet does not installed!");
     }
   };
 
@@ -163,12 +186,16 @@ export default function Navbar() {
                       </ConnectButton.Custom>) : (<></>)}
 
                     {/* Bitcoin Unisat wallet */}
-                    {network == "Bitcoin" && signed == 0 ? 
+                    {network == "Bitcoin-Unisat" && signed == 0 ? 
                       (<button className="px-5 py-[8px] text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]" onClick={connectToUnisat} type="button">
                         Connect Wallet
                       </button>) : (<></>)}
-                    {network == "Bitcoin" && signed == 1 ? 
-                      (<div className='px-5 py-1 w-[200px] text-white border border-white rounded-md'>{address.slice(0, 7) + ' ... ' + address.slice(address.length - 8, address.length - 1)}</div>) : (<></>)}
+                    {network == "Bitcoin-Bitget" && signed == 0 ? 
+                      (<button className="px-5 py-[8px] text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]" onClick={connectToBitget} type="button">
+                        Connect Wallet
+                      </button>) : (<></>)}
+                    {(network == "Bitcoin-Unisat" || network == "Bitcoin-Bitget") && signed == 1 ? 
+                      (<div className='px-5 py-1 w-[200px] text-white border border-white rounded-md'>{address.slice(0, 5) + ' ... ' + address.slice(address.length - 6, address.length - 1)}</div>) : (<></>)}
                 </div>
               </div>
             </div>
