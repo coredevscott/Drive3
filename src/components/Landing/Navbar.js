@@ -61,17 +61,18 @@ export default function Navbar() {
           <div className="relative px-2 py-4 mx-auto cursor-pointer max-w-7xl sm:px-6 lg:px-8">
             <div className="relative flex items-center justify-between h-16">
               <div className="flex items-center justify-center flex-1 sm:items-stretch sm:justify-between">
-                <div className="flex items-center flex-shrink-0">
+                <div className="flex-row items-center flex-shrink-0 hidden gap-4 sm:flex">
                   {/* <a href="/"> */}
                     <img
-                      className="hidden w-auto cursor-pointer sm:block h-7"
-                      src="./img/logo.png"
+                      className="w-auto cursor-pointer h-7"
+                      src="./img/drive3.png"
                       alt="My logo"
                     />
+                    <div className='text-2xl font-semibold text-white'>Drive 3</div>
                   {/* </a> */}
                 </div>
                 <div className='flex flex-row items-center font-medium gap-7'>
-                    <div className='hidden px-2 py-1 text-white border-white rounded-md sm:block'>Docs</div>
+                    <a href="https://ethdrive.net/docs/#/EthDrive" target='_blank'><div className='hidden px-2 py-1 text-white border-white rounded-md sm:block'>Docs</div></a>
                     {signed == 0 ?
                     (<NetworkSelect />) : (<></>)}
 

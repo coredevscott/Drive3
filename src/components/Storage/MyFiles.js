@@ -194,7 +194,7 @@ export default function Home() {
             <div className='flex flex-row items-center w-full py-5'>
               <div className='w-1/4 text-white'>{fileList[i].Name}</div>
               <div className='w-1/4 text-white'>{fileList[i].ModTime}</div>
-              <div className='w-1/4 text-white'>{fileList[i].Mid.slice(0, 14) + '...'}</div>
+              <div className='w-1/4 text-white'>{fileList[i].Mid.slice(0, 7) + '...' + fileList[i].Mid.slice(fileList[i].Mid.length - 7, fileList[i].Mid.length - 1)}</div>
               <div className='w-1/4 text-white'>{(fileList[i].Size % 1000) + 'KB'}</div>
               <div className='flex flex-row items-center justify-center w-1/4 gap-5 text-white'>
                 <div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>
@@ -226,7 +226,7 @@ export default function Home() {
         const formData = new FormData();
         formData.append('file', file);
 
-        setUploadStatus("Uploading ...");
+        setUploadStatus("Uploading " + file.name + " ...");
 
         axios.post('https://api.mefs.io:10000/test/mefs/', formData, 
           {headers: request_headers}
@@ -299,17 +299,18 @@ export default function Home() {
     };
 
     return (
-      <div className="relative h-screen py-12 text-white bg-transparent fadeIn sm:py-20">
+      <div className="relative py-12 text-white bg-transparent fadeIn sm:py-16">
         
         {/* Modal */}
         {showModal == 1 ? (<div className='fixed fadeIn left-0 top-0 w-full h-full bg-transparent z-[1] backdrop-filter backdrop-blur-md'>
             <div className='relative flex flex-col items-center justify-center w-full h-full text-white'>
-                <div className='relative w-full mx-8 sm:w-[540px] bg-[#292B34] p-10 rounded-xl'>
+                <div className='relative w-full mx-8 sm:w-[540px] bg-[#292B34] p-10 rounded-xl flex items-center flex-col justify-center'>
                     <XMarkIcon onClick={() => setShowModal(0)} className='absolute w-6 h-6 cursor-pointer top-3 right-3'/>
-                    <div className='text-2xl font-bold text-left'>Upload</div>
-                    <input type="file" id="file-input" className='mt-8'/>
-                    <div className='flex flex-row items-center justify-center gap-5 mt-10'>
-                      <div className='text-white text-md sm:text-lg'>Status:</div>
+                    <div className='text-2xl font-bold text-left'>Upload File</div>
+                    <div className='flex items-center justify-center p-4 mt-12 border border-gray-500 border-dotted'>
+                    {uploadStatus[0] == "U" ? (<input disabled type="file" id="file-input" className=''/>) : (<input type="file" id="file-input" className=''/>)}                   
+                    </div>
+                    <div className='flex flex-row items-center justify-center gap-5 mt-8'>
                       {
                         uploadStatus != "Uploading" ? (<div className='text-sm text-white sm:text-md'>
                           {uploadStatus}
@@ -317,10 +318,16 @@ export default function Home() {
                       }
                     </div>
                     {/* <div className='bg-[#444754] border border-dotted border-[#979797] rounded-xl h-[100px] mt-10 w-full text-[#898CA9] justify-center items-center flex'>Drag and drop files here</div> */}
-                    <div className='flex flex-row justify-center gap-5 mt-10'>
+                    {uploadStatus[0] == "U" ?
+                      (<div className='flex flex-row justify-center gap-5 mt-10'>
+                        <button disabled className='px-7 py-2 font-medium text-white rounded-xl bg-transparent border border-white from-[#933FFE] w-[150px] to-[#18C8FF]' onClick={() => setShowModal(0)}>Close</button>
+                        <button disabled className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF] w-[150px]' onClick={handleFileUpload}>Upload</button>
+                      </div>) :
+                      (<div className='flex flex-row justify-center gap-5 mt-10'>
                       <button className='px-7 py-2 font-medium text-white rounded-xl bg-transparent border border-white from-[#933FFE] w-[150px] to-[#18C8FF]' onClick={() => setShowModal(0)}>Close</button>
                       <button className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF] w-[150px]' onClick={handleFileUpload}>Upload</button>
-                    </div>
+                    </div>)
+                  }
                 </div>        
             </div>
         </div>) : null}
@@ -334,7 +341,7 @@ export default function Home() {
               <button className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF]'>Private Files</button>
               <button className='px-7 py-2 font-medium text-white rounded-xl bg-[#18C8FF] bg-opacity-20 hover:bg-opacity-30'>Public Files</button>
             </div>
-            <div className='flex flex-row gap-3 items-center text-[#B982FF] font-medium cursor-pointer' onClick={() => setShowModal(1)}>
+            <div className='flex flex-row gap-3 items-center text-[#B982FF] font-medium cursor-pointer mr-5' onClick={() => setShowModal(1)}>
               <LuUpload className='w-5 h-5'/>
               Upload
             </div>
