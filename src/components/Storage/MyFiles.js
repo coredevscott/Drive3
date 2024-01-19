@@ -194,14 +194,17 @@ export default function Home() {
     useEffect(() => {
       var content = [];
 
+      if(fileList != null && fileList.length != 0)
+        fileList.sort((a, b) => a.Size - b.Size);
+
       if(fileList != null){
         for(let i = 0; i < fileList.length; i ++) {
           content = [...content, (
             <div className='flex flex-row items-center w-full py-5'>
-              <div className='w-1/4 text-white'>{fileList[i].Name}</div>
+              <div className='w-1/4 text-white'>{fileList[i].Name.length > 19 ? fileList[i].Name.slice(0, 19) + '...' : fileList[i].Name}</div>
               <div className='w-1/4 text-white'>{fileList[i].ModTime}</div>
               <div className='w-1/4 text-white'>{fileList[i].Mid.slice(0, 7) + '...' + fileList[i].Mid.slice(fileList[i].Mid.length - 7, fileList[i].Mid.length - 1)}</div>
-              <div className='w-1/4 text-white'>{(fileList[i].Size % 1000) + 'KB'}</div>
+              <div className='w-1/4 text-white'>{(fileList[i].Size / 1000) + 'KB'}</div>
               <div className='flex flex-row items-center justify-center w-1/4 gap-5 text-white'>
                 <div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>
                 <div onClick={() => handleFileDelete(fileList[i].Mid)}><MdDelete className='w-6 h-6 text-white cursor-pointer'/></div>
@@ -365,9 +368,9 @@ export default function Home() {
             </div>
           </div>
           <div className='flex flex-row items-center justify-center w-full gap-5 mt-10 text-white'>
-            <FaXTwitter className='w-6 h-6 cursor-pointer hover:translate-y-[-5px] transition-transform duration-700'/>
-            <PiTelegramLogo className='w-6 h-6 cursor-pointer hover:translate-y-[-5px] transition-transform duration-700'/>
-            <FiGithub  className='w-6 h-6 cursor-pointer hover:translate-y-[-5px] transition-transform duration-700'/>
+            <a href="https://twitter.com/ethdrive_net" target="_blank"><FaXTwitter className='w-6 h-6 cursor-pointer hover:translate-y-[-5px] transition-transform duration-700'/></a>
+            <a href="https://t.me/ethdriveglobal" target="_blank"><PiTelegramLogo className='w-6 h-6 cursor-pointer hover:translate-y-[-5px] transition-transform duration-700'/></a>
+            <a href="https://github.com/ethdriveio/ethdriveui.git" target="_blank"><FiGithub  className='w-6 h-6 cursor-pointer hover:translate-y-[-5px] transition-transform duration-700'/></a>
           </div>
         </div>
       </div>
