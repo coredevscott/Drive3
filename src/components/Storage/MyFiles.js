@@ -33,7 +33,7 @@ export default function Home() {
     const [tableContent, setTableContent] = useState([]);
 
     // Global variables
-    const {authToken, setAuthToken, signed, setSigned, network, setNetwork, address, setAddress} = useContext(MyContext);
+    const {authToken, setAuthToken, signed, setSigned, network, setNetwork, address, setAddress, walletType, setWalletType} = useContext(MyContext);
 
     const { data, isError, isLoading, isSuccess, signMessage } = useSignMessage({
       message: challenge,
@@ -57,7 +57,7 @@ export default function Home() {
           initFlag = 1;
 
           if(network == "EVM Chains"){
-            axios.get('https://api.mefs.io:10000/test/challenge?address=' + address + '&' + 'chainid=1', { 
+            axios.get('http://183.240.197.189:18092/challenge?address=' + address + '&' + 'chainid=1', { 
               headers
             })
             .then((response) => {
@@ -67,8 +67,8 @@ export default function Home() {
                 console.error(error);
             });
           }
-          else if(network == "Bitcoin-Unisat" || network == "Bitcoin-Bitget") {
-            axios.get('https://api.mefs.io:10000/test/btc/challenge?address=' + address, { 
+          else if(network == "Bitcoin") {
+            axios.get('http://183.240.197.189:18092/btc/challenge?address=' + address, { 
               headers
             })
             .then((response) => { 
@@ -88,17 +88,23 @@ export default function Home() {
         if(network == "EVM Chains") {
           signMessage();
         }
-        else if(network == "Bitcoin-Unisat" || network == "Bitcoin-Bitget") {
+        else if(network == "Bitcoin") {
           async function signMessageAsync() {
             try {
-              if(network == "Bitcoin-Unisat") {
+              if(walletType == "Unisat") {
                 let res = await window.unisat.signMessage(challenge);
                 setBtcSignMSg(res);
               }
-              else { 
+              else if(walletType == "Bitget") { 
                 let res = await window.bitkeep.unisat.signMessage(challenge);
                 setBtcSignMSg(res);
-              }              
+              }
+              else if(walletType == "Phantom"){
+                const message = new TextEncoder().encode(challenge);
+                const {signature} = await window.phantom.bitcoin.signMessage(address, message);
+                let res = new TextDecoder().decode(signature);
+                setBtcSignMSg(res);
+              } 
             } catch (e) {
               console.log(e);
             }
@@ -124,7 +130,7 @@ export default function Home() {
         console.log(challenge);
         console.log(data);  //signature
 
-        axios.post('https://api.mefs.io:10000/test/login',
+        axios.post('http://183.240.197.189:18092/login',
           headers
         )
         .then((response) => {
@@ -151,7 +157,7 @@ export default function Home() {
         console.log(challenge);
         console.log(btcSignMsg);
 
-        axios.post('https://api.mefs.io:10000/test/btc/login',
+        axios.post('http://183.240.197.189:18092/btc/login',
           headers
         )
         .then((response) => {
@@ -175,7 +181,7 @@ export default function Home() {
       };
 
       if(accessToken != "") {
-        axios.get('https://api.mefs.io:10000/test/mefs/listobjects',
+        axios.get('http://183.240.197.189:18092/mefs/listobjects',
           {headers: request_headers}
         )
         .then((response) => {
@@ -237,7 +243,7 @@ export default function Home() {
 
         setUploadStatus("Uploading " + file.name + " ...");
 
-        axios.post('https://api.mefs.io:10000/test/mefs/', formData, 
+        axios.post('http://183.240.197.189:18092/mefs/', formData, 
           {headers: request_headers}
         )
         .then((response) => {
@@ -258,7 +264,7 @@ export default function Home() {
       console.log('-----file download request-----');
       console.log(fileMid);
 
-      const url = 'https://api.mefs.io:10000/test/mefs/' + fileMid;
+      const url = 'http://183.240.197.189:18092/mefs/' + fileMid;
       const request_headers = {
         'Authorization': 'Bearer ' + accessToken
       };
@@ -295,7 +301,7 @@ export default function Home() {
         'Authorization': 'Bearer ' + accessToken
       };
 
-        axios.get('https://api.mefs.io:10000/test/mefs/delete?mid=' + fileMid,
+        axios.get('http://183.240.197.189:18092/mefs/delete?mid=' + fileMid,
           {headers: request_headers}
         )
         .then((response) => {
@@ -376,3 +382,7 @@ export default function Home() {
       </div>
     )
 }
+
+/*
+http://183.240.197.189:18092/
+*/

@@ -15,6 +15,8 @@ import {
 } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
+import { XMarkIcon } from '@heroicons/react/24/outline';
+
 import '../../css/drive3.css';
 import '../../css/animations.css';
 
@@ -25,10 +27,10 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
+  const [showModal, setShowModal] = useState(0);
+  
   const account = useAccount();
-  const {signed, setSigned, network, setNetwork, address, setAddress} = useContext(MyContext);
-
-  const [walletType, setWalletType] = useState("Unisat");
+  const {signed, setSigned, network, setNetwork, address, setAddress, walletType, setWalletType} = useContext(MyContext);
 
   useEffect(() => {
     if(account.address) {
@@ -48,6 +50,8 @@ export default function Navbar() {
         let res = await window.unisat.getAccounts();
         setAddress(res[0]);
         setSigned(1);
+        setWalletType("Unisat");
+        setShowModal(0);
       } catch (e) {
         console.log('connect failed');
       }
@@ -68,6 +72,8 @@ export default function Navbar() {
         let res = await unisat.getAccounts();
         setAddress(res[0]);
         setSigned(1);
+        setWalletType("Bitget");
+        setShowModal(0);
       } catch (e) {
         console.log('connect failed');
       }
@@ -77,11 +83,44 @@ export default function Navbar() {
     }
   };
 
+  const connectToPhantom = async () => {
+    const provider = window.phantom.bitcoin;
+
+    if (typeof provider !== 'undefined' && provider !== null) {
+      try {
+        let accounts = await provider.requestAccounts();
+        console.log('Phantom Wallet Connect Success!');
+        console.log(accounts);
+
+        setAddress(accounts[0].address);
+        setSigned(1);
+        setWalletType("Phantom");
+        setShowModal(0);
+      } catch (e) {
+        console.log('connect failed');
+      }
+    }
+    else{
+      alert("Phantom Wallet does not installed!");
+    }
+  };
+
   return (
     <Disclosure as="nav" className="relative bg-transparent fadeInDown">
       {({ open }) => (
         <>
           <div className="relative px-2 py-4 mx-auto cursor-pointer max-w-7xl sm:px-6 lg:px-8">
+            {showModal == 1 ? (<div className='fixed fadeIn left-0 top-0 w-full h-full bg-transparent z-[1] backdrop-filter backdrop-blur-md'>
+                <div className='relative flex flex-col items-center justify-center w-full h-full text-white'>
+                    <div className='relative w-full mx-8 sm:w-[540px] bg-[#292B34] p-10 rounded-xl flex items-center flex-col justify-center'>
+                        <XMarkIcon onClick={() => setShowModal(0)} className='absolute w-6 h-6 cursor-pointer top-3 right-3'/>
+                        <div className='text-2xl font-bold text-left'>Select Wallet for Bitcoin</div>
+                        <div className='flex flex-row items-center justify-center gap-5 p-3 mt-10 text-xl font-medium border border-gray-500 rounded-xl w-[350px]' onClick={() => connectToUnisat()}><img src="./img/unisat.png" className='w-12 h-12 rounded-xl'></img>Connect with Unisat</div>
+                        <div className='flex flex-row items-center justify-center gap-5 p-3 mt-6 text-xl font-medium border border-gray-500 rounded-xl w-[350px]' onClick={() => connectToBitget()}><img src="./img/bitget.jpg" className='w-12 h-12 rounded-xl'></img>Connect with Bitget</div>
+                        <div className='flex flex-row items-center justify-center gap-5 p-3 mt-6 text-xl font-medium border border-gray-500 rounded-xl w-[350px]' onClick={() => connectToPhantom()}><img src="./img/phantom.png" className='w-12 h-12 rounded-xl'></img>Connect with Phantom</div>
+                    </div>        
+                </div>
+            </div>) : null}
             <div className="relative flex items-center justify-between h-16">
               <div className="flex items-center justify-center flex-1 sm:items-stretch sm:justify-between">
                 <div className="flex-row items-center flex-shrink-0 hidden gap-4 sm:flex">
@@ -186,15 +225,11 @@ export default function Navbar() {
                       </ConnectButton.Custom>) : (<></>)}
 
                     {/* Bitcoin Unisat wallet */}
-                    {network == "Bitcoin-Unisat" && signed == 0 ? 
-                      (<button className="px-5 py-[8px] text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]" onClick={connectToUnisat} type="button">
+                    {network == "Bitcoin" && signed == 0 ? 
+                      (<button className="px-5 py-[8px] text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]" onClick={() => setShowModal(1)} type="button">
                         Connect Wallet
                       </button>) : (<></>)}
-                    {network == "Bitcoin-Bitget" && signed == 0 ? 
-                      (<button className="px-5 py-[8px] text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]" onClick={connectToBitget} type="button">
-                        Connect Wallet
-                      </button>) : (<></>)}
-                    {(network == "Bitcoin-Unisat" || network == "Bitcoin-Bitget") && signed == 1 ? 
+                    {network == "Bitcoin" && signed == 1 ? 
                       (<div className='px-5 py-1 w-[200px] text-white border border-white rounded-md'>{address.slice(0, 5) + ' ... ' + address.slice(address.length - 6, address.length - 1)}</div>) : (<></>)}
                 </div>
               </div>
