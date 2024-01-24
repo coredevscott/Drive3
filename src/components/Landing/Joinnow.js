@@ -8,9 +8,9 @@ export default function Joinnow() {
                   <div className="text-left lg:max-w-lg">
                       <p className="max-w-lg mt-2 text-3xl font-bold tracking-tight text-white sm:text-5xl">Take your first step, into safe, secure crypto network</p>
                       <p className="mt-6 leading-8 text-[#898CA9] text-md">
-                        Norem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. 
+                        Select a suitable blockchain platform or decentralized file storage protocol that supports file storage capabilities. Examples include IPFS (InterPlanetary File System), Filecoin, Storj, or Sia.
                       </p>
-                      <button className='mt-6 px-10 py-4 font-medium text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]'>Join Now</button>
+                      <a href="https://t.me/ethdriveglobal" target="_blank"><button className='mt-6 px-10 py-4 font-medium text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]'>Join Now</button></a>
                   </div>
               </div>
               <div className="flex justify-center">     

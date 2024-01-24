@@ -49,18 +49,24 @@ export default function Home() {
     // Step 1. Get Challenge text
     useEffect(() => {
       if(signed == 1) {
-        const headers = {
+        const request_headers = {
           'Origin': 'https://memo.io'
         };
         
         if(challenge == "" && initFlag == 0){
           initFlag = 1;
 
+          console.log('-----challenge request-----');
+          console.log(address);
+
           if(network == "EVM Chains"){
-            axios.get('http://183.240.197.189:18092/challenge?address=' + address + '&' + 'chainid=1', { 
-              headers
-            })
+            axios.get('https://183.240.197.189:18091/challenge?address=' + address + '&' + 'chainid=1',
+              {headers: request_headers}
+            )
             .then((response) => {
+              console.log('-----challenge response-----');
+              console.log(response.data);
+              
               setChallenge(response.data);
             })
             .catch((error) => {
@@ -68,9 +74,9 @@ export default function Home() {
             });
           }
           else if(network == "Bitcoin") {
-            axios.get('http://183.240.197.189:18092/btc/challenge?address=' + address, { 
-              headers
-            })
+            axios.get('https://183.240.197.189:18091/btc/challenge?address=' + address, 
+              {headers: request_headers}
+            )
             .then((response) => { 
               setChallenge(response.data);
             })
@@ -130,7 +136,7 @@ export default function Home() {
         console.log(challenge);
         console.log(data);  //signature
 
-        axios.post('http://183.240.197.189:18092/login',
+        axios.post('https://183.240.197.189:18091/login',
           headers
         )
         .then((response) => {
@@ -157,7 +163,7 @@ export default function Home() {
         console.log(challenge);
         console.log(btcSignMsg);
 
-        axios.post('http://183.240.197.189:18092/btc/login',
+        axios.post('https://183.240.197.189:18091/btc/login',
           headers
         )
         .then((response) => {
@@ -181,7 +187,7 @@ export default function Home() {
       };
 
       if(accessToken != "") {
-        axios.get('http://183.240.197.189:18092/mefs/listobjects',
+        axios.get('https://183.240.197.189:18091/mefs/listobjects',
           {headers: request_headers}
         )
         .then((response) => {
@@ -243,7 +249,7 @@ export default function Home() {
 
         setUploadStatus("Uploading " + file.name + " ...");
 
-        axios.post('http://183.240.197.189:18092/mefs/', formData, 
+        axios.post('https://183.240.197.189:18091/mefs/', formData, 
           {headers: request_headers}
         )
         .then((response) => {
@@ -264,7 +270,7 @@ export default function Home() {
       console.log('-----file download request-----');
       console.log(fileMid);
 
-      const url = 'http://183.240.197.189:18092/mefs/' + fileMid;
+      const url = 'https://183.240.197.189:18091/mefs/' + fileMid;
       const request_headers = {
         'Authorization': 'Bearer ' + accessToken
       };
@@ -301,7 +307,7 @@ export default function Home() {
         'Authorization': 'Bearer ' + accessToken
       };
 
-        axios.get('http://183.240.197.189:18092/mefs/delete?mid=' + fileMid,
+        axios.get('https://183.240.197.189:18091/mefs/delete?mid=' + fileMid,
           {headers: request_headers}
         )
         .then((response) => {
@@ -384,5 +390,5 @@ export default function Home() {
 }
 
 /*
-http://183.240.197.189:18092/
+https://183.240.197.189:18091/
 */

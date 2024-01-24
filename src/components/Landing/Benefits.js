@@ -1,9 +1,9 @@
 import '../../css/animations.css';
 
 const wallets = [
-  {imgSrc: "./img/benefit1.png", title:"Wallet Setup", content: "Qorem ipsum consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis."}, 
-  {imgSrc: "./img/benefit2.png", title:"Easy to connect", content:"Qorem ipsum consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis."}, 
-  {imgSrc: "./img/benefit3.png", title:"Get more profit", content:"Qorem ipsum dolor sit amet, consectetur adivulputate libero et velit interdum, ac aliquet odio mattis."}, 
+  {imgSrc: "./img/benefit1.png", title:"Wallet Setup", content: "Blockchain-based file storage systems often require users to set up a digital wallet to access the storage network. This wallet serves as a secure gateway for managing files and transactions."}, 
+  {imgSrc: "./img/benefit2.png", title:"Easy to connect", content:" Blockchain-based file storage often employs peer-to-peer (P2P) networking, enabling direct and efficient file sharing between users. This eliminates the need for intermediaries or centralized servers, making it easier to connect and share files."}, 
+  {imgSrc: "./img/benefit3.png", title:"Get more profit", content:"Users participating in the blockchain file storage network may receive tokens or cryptocurrencies as rewards for contributing their storage space or resources. These tokens can have monetary value and can be traded or exchanged for other assets, potentially leading to financial gains."}, 
 ];
 
 export default function Benefits() {
@@ -19,7 +19,7 @@ export default function Benefits() {
             What are the Benefits you can get in Ethdrive
           </h2>
           <div className="max-w-xl text-[#898CA9]">Qorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.</div>
-          <button className='px-10 py-4 font-medium text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]'>Join Now</button>
+          <a href="https://t.me/ethdriveglobal" target="_blank"><button className='px-10 py-4 font-medium text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]'>Join Now</button></a>
           <div className="grid items-center max-w-lg grid-cols-1 mx-auto mt-10 gap-x-8 gap-y-10 sm:max-w-xl sm:gap-x-10 lg:mx-0 lg:max-w-none sm:grid-cols-3">   
             {
                 wallets.map((item) => (
@@ -31,7 +31,7 @@ export default function Benefits() {
                         />
                         <div className='text-2xl font-semibold'>{item.title}</div>
                         <div className='text-[#898CA9]'>{item.content}</div>
-                        <div className='text-purple-400 cursor-pointer'>View details</div>
+                        {/* <div className='text-purple-400 cursor-pointer'>View details</div> */}
                     </div>
                 ))
             }

@@ -16,9 +16,16 @@ export default function Purpose() {
                 <div className="text-left lg:max-w-lg">
                     <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">Our process</p>
                     <p className="mt-6 leading-8 text-[#898CA9] text-md">
-                        Rorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet feugiat lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent auctor purus luctus enim egestas, ac scelerisque ante pulvinar. Donec ut rhoncus ex. Suspendisse ac rhoncus nisl, 
+                      1. Choosing a Blockchain Platform
+                      <br></br>2. Wallet Setup
+                      <br></br>3. File Preparation
+                      <br></br>4. File Encryption
+                      <br></br>5. File Upload
+                      <br></br>6. Transaction Verification and Confirmation
+                      <br></br>7. File Distribution and Storage
+                      <br></br>8. Retrieval and Access
                     </p>
-                    <button className='px-8 py-3 mt-6 text-sm font-medium text-white bg-transparent border border-white rounded-md w-36'>Read More</button>
+                    <a href="https://t.me/ethdriveglobal" target="_blank"><button className='px-8 py-3 mt-6 text-sm font-medium text-white bg-transparent border border-white rounded-md w-36'>Read More</button></a>
                 </div>
             </div>
         </div>

@@ -22,8 +22,8 @@ export default function People() {
           <h2 className="max-w-2xl text-3xl font-bold text-center sm:text-5xl">
             Popular People on Drive3
           </h2>
-          <div className="max-w-xl text-[#898CA9]">Qorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.</div>
-          <div className='text-purple-400 cursor-pointer'>Learn more</div>
+          <div className="max-w-xl text-[#898CA9]">Blockchain-based cryptocurrency that offers fast and feeless transactions, making it a potential solution for efficient and cost-effective file storage on the blockchain</div>
+          <a href="https://t.me/ethdriveglobal" target="_blank"><div className='text-purple-400 cursor-pointer'>Learn more</div></a>
           <div className="grid items-center max-w-lg grid-cols-1 mx-auto mt-10 gap-x-8 gap-y-10 sm:max-w-xl sm:gap-x-10 lg:mx-0 lg:max-w-none sm:grid-cols-3">   
             {
                 wallets.map((item) => (
