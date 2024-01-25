@@ -60,7 +60,7 @@ export default function Home() {
           console.log(address);
 
           if(network == "EVM Chains"){
-            axios.get('https://183.240.197.189:18091/challenge?address=' + address + '&' + 'chainid=1',
+            axios.get('https://api.mefs.io:10000/produce/challenge?address=' + address + '&' + 'chainid=1',
               {headers: request_headers}
             )
             .then((response) => {
@@ -74,7 +74,7 @@ export default function Home() {
             });
           }
           else if(network == "Bitcoin") {
-            axios.get('https://183.240.197.189:18091/btc/challenge?address=' + address, 
+            axios.get('https://api.mefs.io:10000/produce/btc/challenge?address=' + address, 
               {headers: request_headers}
             )
             .then((response) => { 
@@ -136,7 +136,7 @@ export default function Home() {
         console.log(challenge);
         console.log(data);  //signature
 
-        axios.post('https://183.240.197.189:18091/login',
+        axios.post('https://api.mefs.io:10000/produce/login',
           headers
         )
         .then((response) => {
@@ -163,7 +163,7 @@ export default function Home() {
         console.log(challenge);
         console.log(btcSignMsg);
 
-        axios.post('https://183.240.197.189:18091/btc/login',
+        axios.post('https://api.mefs.io:10000/produce/btc/login',
           headers
         )
         .then((response) => {
@@ -187,7 +187,7 @@ export default function Home() {
       };
 
       if(accessToken != "") {
-        axios.get('https://183.240.197.189:18091/mefs/listobjects',
+        axios.get('https://api.mefs.io:10000/produce/mefs/listobjects',
           {headers: request_headers}
         )
         .then((response) => {
@@ -219,7 +219,7 @@ export default function Home() {
               <div className='w-1/4 text-white'>{(fileList[i].Size / 1000) + 'KB'}</div>
               <div className='flex flex-row items-center justify-center w-1/4 gap-5 text-white'>
                 <div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>
-                <div onClick={() => handleFileDelete(fileList[i].Mid)}><MdDelete className='w-6 h-6 text-white cursor-pointer'/></div>
+                <div onClick={() => handleFileDelete(fileList[i].ID)}><MdDelete className='w-6 h-6 text-white cursor-pointer'/></div>
                 <div><IoMdShare className='w-6 h-6 text-white cursor-pointer' /></div>
               </div>
             </div>
@@ -249,7 +249,7 @@ export default function Home() {
 
         setUploadStatus("Uploading " + file.name + " ...");
 
-        axios.post('https://183.240.197.189:18091/mefs/', formData, 
+        axios.post('https://api.mefs.io:10000/produce/mefs/', formData, 
           {headers: request_headers}
         )
         .then((response) => {
@@ -270,7 +270,7 @@ export default function Home() {
       console.log('-----file download request-----');
       console.log(fileMid);
 
-      const url = 'https://183.240.197.189:18091/mefs/' + fileMid;
+      const url = 'https://api.mefs.io:10000/produce/mefs/' + fileMid;
       const request_headers = {
         'Authorization': 'Bearer ' + accessToken
       };
@@ -299,20 +299,22 @@ export default function Home() {
     };
 
     // Step 7. File Delete
-    const handleFileDelete = (fileMid) => {
+    const handleFileDelete = (fileId) => {
       console.log('-----file delete request-----');
-      console.log(fileMid);
+      console.log(fileId);
 
       const request_headers = {
         'Authorization': 'Bearer ' + accessToken
       };
 
-        axios.get('https://183.240.197.189:18091/mefs/delete?mid=' + fileMid,
+        axios.get('https://api.mefs.io:10000/produce/mefs/delete?id=' + fileId,
           {headers: request_headers}
         )
         .then((response) => {
           console.log('-----file delete response-----');
           console.log(response);
+
+          setUploadFlag(1 - uploadFlag);
         })
         .catch((error) => {
             console.error(error);
@@ -390,5 +392,5 @@ export default function Home() {
 }
 
 /*
-https://183.240.197.189:18091/
+https://api.mefs.io:10000/produce/
 */
