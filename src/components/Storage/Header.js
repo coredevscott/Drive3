@@ -22,12 +22,13 @@ export default function Header() {
   useEffect(() => {
     if(signed == 1 && authToken != "") {
       console.log('-----query file storage request-----');
+      console.log(authToken);
 
       const request_headers = {
         'Authorization': 'Bearer ' + authToken
       };
 
-      axios.get('https://api.mefs.io:10000/test/mefs/storageinfo',
+      axios.get('https://api.mefs.io:10000/produce/mefs/storageinfo?stype=mefs',
         {headers: request_headers}
       )
       .then((response) => {
@@ -67,9 +68,9 @@ export default function Header() {
               {showModal == 1 ? (<div className='absolute z-10 p-5 text-gray-700 bg-white right-5 fadeIn top-14 rounded-xl'>
                   <div className='flex flex-row items-center justify-center gap-3'>
                     <LuUserCircle2 className='w-5 h-5'/>
-                    <p>{address.slice(0, 9) + '...' + address.slice(address.length - 8, address.length - 1)}</p>
+                    <p>{address.slice(0, 9) + '...' + address.slice(address.length - 8, address.length)}</p>
                   </div>
-                  <div className='mt-4'>{(usedStorage / 1024 / 1024).toFixed(0)}MB/10GB</div>
+                  <div className='mt-4'>{(usedStorage / 1024).toFixed(0)}KB/10GB</div>
                   <div className='mt-4 text-sm'>Current Version: 2.0</div>
                 </div>) : (<div></div>)}
             </div>

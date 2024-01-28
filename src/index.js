@@ -22,6 +22,17 @@ import {
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 
+import {
+  injectedWallet,
+  rainbowWallet,
+  metaMaskWallet,
+  coinbaseWallet,
+  walletConnectWallet,
+  argentWallet,
+} from '@rainbow-me/rainbowkit/wallets';
+
+import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+
 const { chains, publicClient } = configureChains(
   [mainnet, bsc, polygon, arbitrum, zkSync, base],
   [
@@ -30,11 +41,38 @@ const { chains, publicClient } = configureChains(
   ]
 );
 
-const { connectors } = getDefaultWallets({
-  appName: 'walletConnect',
-  projectId: 'fe62b424c4ab666f47d64744e0b3dca0',
-  chains
-});
+// const connectors = connectorsForWallets([
+//   {
+//     groupName: 'Recommended',
+//     wallets: [
+//       injectedWallet({ chains }),
+//       metaMaskWallet({ projectId, chains }),
+//       walletConnectWallet({ projectId, chains }),
+//     ],
+//   },
+// ]);
+
+const projectId = 'fe62b424c4ab666f47d64744e0b3dca0';
+
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Suggested',
+    wallets: [
+      injectedWallet({ chains }),
+      rainbowWallet({ projectId, chains }),
+      metaMaskWallet({ projectId, chains }),
+      coinbaseWallet({ chains, appName: 'walletConnect' }),
+      walletConnectWallet({ projectId, chains }),
+      argentWallet({ projectId, chains }),
+    ],
+  },
+]);
+
+// const { connectors } = getDefaultWallets({
+//   appName: 'walletConnect',
+//   projectId: 'fe62b424c4ab666f47d64744e0b3dca0',
+//   chains
+// });
 
 const wagmiConfig = createConfig({
   autoConnect: true,
