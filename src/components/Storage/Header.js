@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { LuUserCircle2 } from "react-icons/lu";
 import axios from 'axios';
-
+import { Link } from 'react-router-dom';
 
 import '../../css/drive3.css';
 import '../../css/animations.css';
@@ -38,7 +38,9 @@ export default function Header() {
         setUsedStorage(response.data.Used);
       })
       .catch((error) => {
-          console.error(error); 
+          console.error(error);
+
+          setUsedStorage(0);
       });
     }
   }, [authToken]);
@@ -50,7 +52,7 @@ export default function Header() {
           <div className="relative px-2 py-4 mx-auto cursor-pointer max-w-7xl sm:px-6 lg:px-8">
             <div className="relative flex items-center justify-between h-16">
               <div className="flex items-center justify-center flex-1 sm:items-stretch sm:justify-between">
-                <div className="flex-row items-center flex-shrink-0 hidden gap-4 sm:flex">
+              <Link to='/'><div className="flex-row items-center flex-shrink-0 hidden gap-4 sm:flex">
                   {/* <a href="/"> */}
                     <img
                       className="w-auto cursor-pointer h-7"
@@ -59,7 +61,7 @@ export default function Header() {
                     />
                     <div className='text-2xl font-semibold text-white'>Drive 3</div>
                   {/* </a> */}
-                </div>
+                </div></Link>
                 <div className='relative flex flex-row items-center justify-center mr-5 font-medium gap-7'>
                     <a href="https://ethdrive.net/docs/#/EthDrive" target='_blank'><div className='px-2 py-1 text-white border-white rounded-md'>Docs</div></a>
                     <LuUserCircle2 onClick={() => setShowModal(1 - showModal)} className='w-8 h-8 text-white'/>
@@ -72,6 +74,7 @@ export default function Header() {
                   </div>
                   <div className='mt-4'>{(usedStorage / 1024).toFixed(0)}KB/10GB</div>
                   <div className='mt-4 text-sm'>Current Version: 2.0</div>
+                  <Link to='/'><div className='mt-4 text-sm font-semibold'>Log out</div></Link>
                 </div>) : (<div></div>)}
             </div>
           </div>

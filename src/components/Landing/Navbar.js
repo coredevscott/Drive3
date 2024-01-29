@@ -32,6 +32,9 @@ export default function Navbar() {
   const account = useAccount();
   const {signed, setSigned, network, setNetwork, address, setAddress, walletType, setWalletType} = useContext(MyContext);
 
+  console.log('---------------');
+  console.log(signed);
+
   useEffect(() => {
     if(account.address) {
       setAddress(account.address);
@@ -110,7 +113,7 @@ export default function Navbar() {
       {({ open }) => (
         <>
           <div className="relative px-2 py-4 mx-auto cursor-pointer max-w-7xl sm:px-6 lg:px-8">
-            {showModal == 1 ? (<div className='fixed fadeIn left-0 top-0 w-full h-full bg-transparent z-[1] backdrop-filter backdrop-blur-md'>
+            {showModal == 1 ? (<div className='fixed fadeIn left-0 top-0 w-full h-full z-[10000] bg-transparent backdrop-filter backdrop-blur-md'>
                 <div className='relative flex flex-col items-center justify-center w-full h-full text-white'>
                     <div className='relative w-full mx-8 sm:w-[540px] bg-[#292B34] p-10 rounded-xl flex items-center flex-col justify-center'>
                         <XMarkIcon onClick={() => setShowModal(0)} className='absolute w-6 h-6 cursor-pointer top-3 right-3'/>
@@ -133,10 +136,9 @@ export default function Navbar() {
                     <div className='text-2xl font-semibold text-white'>Drive 3</div>
                   {/* </a> */}
                 </div>
-                <div className='flex flex-row items-center font-medium gap-7'>
+                <div className='flex flex-col items-center mt-10 font-medium sm:flex-row sm:mt-0 gap-7'>
                     <a href="https://ethdrive.net/docs/#/EthDrive" target='_blank'><div className='hidden px-2 py-1 text-white border-white rounded-md sm:block'>Docs</div></a>
-                    {signed == 0 ?
-                    (<NetworkSelect />) : (<></>)}
+                    <NetworkSelect />
 
                     {/* EVM chains - RainbowKit */}
                     {network == "EVM Chains" ?
@@ -225,11 +227,11 @@ export default function Navbar() {
                       </ConnectButton.Custom>) : (<></>)}
 
                     {/* Bitcoin Unisat wallet */}
-                    {network == "Bitcoin" && signed == 0 ? 
+                    {network == "Bitcoin" && signed == 0 || (network == "Bitcoin" && address.includes("0x")) ? 
                       (<button className="px-5 py-[8px] text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]" onClick={() => setShowModal(1)} type="button">
                         Connect Wallet
                       </button>) : (<></>)}
-                    {network == "Bitcoin" && signed == 1 ? 
+                    {network == "Bitcoin" && signed == 1 && !(network == "Bitcoin" && address.includes("0x"))? 
                       (<div className='px-5 py-1 w-[200px] text-white border border-white rounded-md'>{address.slice(0, 5) + ' ... ' + address.slice(address.length - 6, address.length - 1)}</div>) : (<></>)}
                 </div>
               </div>

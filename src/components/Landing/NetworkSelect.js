@@ -6,8 +6,8 @@ import { useContext } from 'react'
 import MyContext from '../../MyContext';
 
 const chainlist = [
-  { name: 'EVM Chains' },
   { name: 'Bitcoin' },
+  { name: 'EVM Chains' },
   // { name: 'Solana' },
 ]
 
@@ -18,6 +18,11 @@ export default function NetworkSelect() {
   useEffect(() => {
     setNetwork(selected.name);
   }, [selected]);
+
+  useEffect(() => {
+    if(address.includes("0x"))
+      setSelected(chainlist[1]);
+  }, [address]);
 
   return (
     <div className="relative z-10 w-48">

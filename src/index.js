@@ -29,6 +29,9 @@ import {
   coinbaseWallet,
   walletConnectWallet,
   argentWallet,
+  trustWallet,
+  imTokenWallet,
+  tokenPocketWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 
 import { connectorsForWallets } from '@rainbow-me/rainbowkit';
@@ -64,6 +67,9 @@ const connectors = connectorsForWallets([
       coinbaseWallet({ chains, appName: 'walletConnect' }),
       walletConnectWallet({ projectId, chains }),
       argentWallet({ projectId, chains }),
+      trustWallet({projectId, chains}),
+      imTokenWallet({projectId, chains}),
+      tokenPocketWallet({projectId, chains})
     ],
   },
 ]);

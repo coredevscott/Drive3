@@ -7,7 +7,7 @@ import { useState, createContext, useContext } from 'react';
 import MyContext from './MyContext';
 
 const MyProvider = ({ children }) => {
-  const [network, setNetwork] = useState("EVM Chains");
+  const [network, setNetwork] = useState("Bitcoin");
   const [signed, setSigned] = useState(0);
   const [address, setAddress] = useState("");
   const [authToken, setAuthToken] = useState("");

@@ -22,6 +22,7 @@ export default function Home() {
     var initFlag = 0; // Prevent useEffect call twice when get challenge text
     const [flag, setFlag] = useState(0);  //Prevent walletSign twice
     const [showModal, setShowModal] = useState(0);  // Upload modal flag
+    const [showShareModal, setShowShareModal] = useState(0);  // Share modal flag
     const [uploadFlag, setUploadFlag] = useState(0);  // Refresh table when upload finished
 
     // Rest Api response
@@ -31,6 +32,7 @@ export default function Home() {
     const [refreshToken, setRefreshToken] = useState("");
     const [fileList, setFileList] = useState([]);
     const [tableContent, setTableContent] = useState([]);
+    const [sharedAddress, setSharedAddress] = useState("");
 
     // Global variables
     const {authToken, setAuthToken, signed, setSigned, network, setNetwork, address, setAddress, walletType, setWalletType} = useContext(MyContext);
@@ -220,7 +222,7 @@ export default function Home() {
               <div className='flex flex-row items-center justify-center w-1/4 gap-5 text-white'>
                 <div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>
                 <div onClick={() => handleFileDelete(fileList[i].ID)}><MdDelete className='w-6 h-6 text-white cursor-pointer'/></div>
-                <div><IoMdShare className='w-6 h-6 text-white cursor-pointer' /></div>
+                <div><IoMdShare className='w-6 h-6 text-white cursor-pointer' onClick={() => handleFileShare({"mid": fileList[i].Mid, "name": fileList[i].Name})}/></div>
               </div>
             </div>
           )];
@@ -260,7 +262,10 @@ export default function Home() {
           setUploadFlag(1 - uploadFlag);
         })
         .catch((error) => {
-            console.error(error);
+          console.error(error);
+
+          setUploadStatus("File Upload Failed, please select again");
+          setUploadFlag(1 - uploadFlag);
         });
       }
     };
@@ -321,6 +326,32 @@ export default function Home() {
         });
     };
 
+    // Step 7. File Share
+    const handleFileShare = (fileData) => {
+      console.log('-----file share request-----');
+      console.log(fileData);
+
+      const request_headers = {
+        'Authorization': 'Bearer ' + accessToken,
+        'Content-Type': 'application/json',
+      };
+
+        axios.post('https://api.mefs.io:10000/produce/share',
+          {"mid": fileData.mid, "name": fileData.name, "type": 0},
+          {headers: request_headers}
+        )
+        .then((response) => {
+          console.log('-----file share response-----');
+          console.log(response);
+
+          setSharedAddress(response.data); 
+          setShowShareModal(1);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+    };
+    
     return (
       <div className="relative py-12 text-white bg-transparent fadeIn sm:py-16">
         
@@ -353,6 +384,18 @@ export default function Home() {
                   }
                 </div>        
             </div>
+        </div>) : null}
+
+        {/* Modal */}
+        {showShareModal == 1 ? (<div className='fixed fadeIn left-0 top-0 w-full h-full bg-transparent z-[1] backdrop-filter backdrop-blur-md'>
+          <div className='relative flex flex-col items-center justify-center w-full h-full text-white'>
+              <div className='relative w-full mx-8 sm:w-[540px] bg-[#292B34] p-10 rounded-xl flex items-center flex-col justify-center'>
+                  <XMarkIcon onClick={() => setShowShareModal(0)} className='absolute w-6 h-6 cursor-pointer top-3 right-3'/>
+                  <div className='text-2xl font-bold text-left'>File Share</div>
+                  <div className='max-w-md overflow-auto font-medium text-left mt-7 text-md'>{sharedAddress}</div>
+                  <button className='mt-7 px-7 py-2 font-medium text-white rounded-xl bg-transparent border border-white from-[#933FFE] w-[150px] to-[#18C8FF]' onClick={() => setShowShareModal(0)}>Close</button>
+              </div>        
+          </div>
         </div>) : null}
 
         <div className="flex flex-col items-start justify-start px-6 mx-auto max-w-7xl lg:px-8">
