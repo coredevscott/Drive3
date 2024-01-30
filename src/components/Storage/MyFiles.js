@@ -165,20 +165,20 @@ export default function Home() {
         console.log(challenge);
         console.log(btcSignMsg);
 
-        // axios.post('https://api.mefs.io:10000/produce/btc/login',
-        //   headers
-        // )
-        // .then((response) => {
-        //   console.log('-----btc login response-----');
-        //   console.log(response);
+        axios.post('https://api.mefs.io:10000/produce/btc/login',
+          headers
+        )
+        .then((response) => {
+          console.log('-----btc login response-----');
+          console.log(response);
 
-        //   setAuthToken(response.data.accessToken);  // Set Global Variable for Auth
-        //   setAccessToken(response.data.accessToken);
-        //   setRefreshToken(response.data.refreshToken);
-        // })
-        // .catch((error) => {
-        //     console.error(error);
-        // });
+          setAuthToken(response.data.accessToken);  // Set Global Variable for Auth
+          setAccessToken(response.data.accessToken);
+          setRefreshToken(response.data.refreshToken);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
       }
     }, [isSuccess, btcSignMsg]);
 
