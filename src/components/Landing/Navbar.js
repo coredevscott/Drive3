@@ -6,6 +6,8 @@ import { useContext } from 'react'
 import MyContext from '../../MyContext';
 import { useState } from 'react';
 
+import { getAddress } from 'sats-connect'
+
 import {
   useAccount,
   useContractRead,
@@ -31,9 +33,6 @@ export default function Navbar() {
   
   const account = useAccount();
   const {signed, setSigned, network, setNetwork, address, setAddress, walletType, setWalletType} = useContext(MyContext);
-
-  console.log('---------------');
-  console.log(signed);
 
   useEffect(() => {
     if(account.address) {
@@ -106,6 +105,25 @@ export default function Navbar() {
     else{
       alert("Phantom Wallet does not installed!");
     }
+  };
+
+  const connectToXverse = async () => {
+    const getAddressOptions = {
+      payload: {
+        purposes: ['ordinals', 'payment'],
+        message: 'Address for receiving Ordinals and payments',
+        network: {
+          type:'Mainnet'
+        },
+      },
+      onFinish: (response) => {
+        console.log('---------------------');
+        console.log(response)
+      },
+      onCancel: () => alert('Request canceled'),
+      }
+        
+    await getAddress(getAddressOptions);
   };
 
   return (
