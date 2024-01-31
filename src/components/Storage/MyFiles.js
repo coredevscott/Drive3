@@ -35,6 +35,7 @@ export default function Home() {
     const [fileList, setFileList] = useState([]);
     const [tableContent, setTableContent] = useState([]);
     const [sharedAddress, setSharedAddress] = useState("");
+    const [fileName, setFileName] = useState("Please Select File");
 
     // Global variables
     const {authToken, setAuthToken, signed, setSigned, network, setNetwork, address, setAddress, walletType, setWalletType} = useContext(MyContext);
@@ -378,6 +379,13 @@ export default function Home() {
             console.error(error);
         });
     };
+
+    const displayFileName = () => {
+      const fileInput = document.getElementById('file-input');
+      const file = fileInput.files[0];
+
+      setFileName(file.name);
+    }
     
     return (
       <div className="relative py-12 text-white bg-transparent fadeIn sm:py-16">
@@ -388,8 +396,9 @@ export default function Home() {
                 <div className='relative w-full mx-8 sm:w-[540px] bg-[#292B34] p-10 rounded-xl flex items-center flex-col justify-center'>
                     <XMarkIcon onClick={() => setShowModal(0)} className='absolute w-6 h-6 cursor-pointer top-3 right-3'/>
                     <div className='text-2xl font-bold text-left'>Upload File</div>
-                    <div className='flex items-center justify-center p-4 mt-12 border border-gray-500 border-dotted'>
-                    {uploadStatus[0] == "U" ? (<input disabled type="file" id="file-input" className=''/>) : (<input type="file" id="file-input" className=''/>)}                   
+                    <div className='relative flex items-center justify-center p-4 mt-12 border-gray-500 border-dotted'>
+                    {uploadStatus[0] == "U" ? (<input disabled type="file" id="file-input" className='z-10 opacity-0 w-[250px]'/>) : (<input type="file" id="file-input" onChange={displayFileName} className='z-10 opacity-0 w-[250px]'/>)}
+                    <div className='absolute z-0 left-0 top-0 py-2 font-medium text-white rounded-xl bg-transparent border border-white from-[#933FFE] w-full overflow-hidden to-[#18C8FF]'>{fileName}</div>
                     </div>
                     <div className='flex flex-row items-center justify-center gap-5 mt-8'>
                       {
