@@ -129,6 +129,23 @@ export default function Navbar() {
     await getAddress(getAddressOptions);
   };
 
+  const connectToOkx = async () => {
+    if(window.okxwallet == undefined || window.okxwallet == null)
+      alert('Okx wallet does not installed');
+    else {
+      try {
+        const result = await window.okxwallet.bitcoin.connect();
+        
+        setAddress(result.address);
+        setSigned(1);
+        setWalletType("Okx");
+        setShowModal(0);
+      } catch (e) {
+        console.log('connect failed');
+      }
+    }
+  };
+
   return (
     <Disclosure as="nav" className="relative bg-transparent fadeInDown">
       {({ open }) => (
@@ -141,6 +158,7 @@ export default function Navbar() {
                         <div className='text-2xl font-bold text-left'>Select Wallet for Bitcoin</div>
                         <div className='flex flex-row items-center justify-center gap-5 p-3 mt-10 text-xl font-medium border border-gray-500 rounded-xl w-[350px]' onClick={() => connectToUnisat()}><img src="./img/unisat.png" className='w-12 h-12 rounded-xl'></img>Connect with Unisat</div>
                         <div className='flex flex-row items-center justify-center gap-5 p-3 mt-6 text-xl font-medium border border-gray-500 rounded-xl w-[350px]' onClick={() => connectToBitget()}><img src="./img/bitget.jpg" className='w-12 h-12 rounded-xl'></img>Connect with Bitget</div>
+                        <div className='flex flex-row items-center justify-center gap-5 p-3 mt-6 text-xl font-medium border border-gray-500 rounded-xl w-[350px]' onClick={() => connectToOkx()}><img src="./img/okx.png" className='w-12 h-12 rounded-xl'></img>Connect with OkxWallet</div>
                         <div className='flex flex-row items-center justify-center gap-5 p-3 mt-6 text-xl font-medium border border-gray-500 rounded-xl w-[350px]' onClick={() => connectToXverse()}><img src="./img/xverse.png" className='w-12 h-12 rounded-xl'></img>Connect with Xverse</div>
                         <div className='flex flex-row items-center justify-center gap-5 p-3 mt-6 text-xl font-medium border border-gray-500 rounded-xl w-[350px]' onClick={() => connectToPhantom()}><img src="./img/phantom.png" className='w-12 h-12 rounded-xl'></img>Connect with Phantom</div>
                     </div>        

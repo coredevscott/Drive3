@@ -134,6 +134,10 @@ export default function Home() {
                   onCancel: () => console.log("Xverse Sign Message Canceled"),
                 };
                 await signMessage(signMessageOptions);  
+              }
+              else if(walletType == "Okx"){
+                const result = await window.okxwallet.bitcoin.signMessage(challenge, 'ecdsa')
+                setBtcSignMSg(result);
               } 
             } catch (e) {
               console.log(e);
