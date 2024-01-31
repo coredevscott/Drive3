@@ -400,7 +400,7 @@ export default function Home() {
                     {uploadStatus[0] == "U" ? (<input disabled type="file" id="file-input" className='z-10 opacity-0 w-[250px]'/>) : (<input type="file" id="file-input" onChange={displayFileName} className='z-10 opacity-0 w-[250px]'/>)}
                     <div className='absolute z-0 left-0 top-0 py-2 font-medium text-white rounded-xl bg-transparent border border-white from-[#933FFE] w-full overflow-hidden to-[#18C8FF]'>{fileName}</div>
                     </div>
-                    <div className='flex flex-row items-center justify-center gap-5 mt-8'>
+                    <div className='flex flex-row items-center justify-center gap-5 mt-5'>
                       {
                         uploadStatus != "Uploading" ? (<div className='text-sm text-white sm:text-md'>
                           {uploadStatus}
