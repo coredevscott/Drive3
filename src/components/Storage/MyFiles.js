@@ -9,6 +9,8 @@ import { useEffect, useState } from 'react';
 import { MdDelete } from "react-icons/md";
 import { IoMdShare } from "react-icons/io";
 
+import { signMessage } from 'sats-connect'
+
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import axios from 'axios';
 
@@ -37,7 +39,7 @@ export default function Home() {
     // Global variables
     const {authToken, setAuthToken, signed, setSigned, network, setNetwork, address, setAddress, walletType, setWalletType} = useContext(MyContext);
 
-    const { data, isError, isLoading, isSuccess, signMessage } = useSignMessage({
+    const { data, isError, isLoading, isSuccess, signMessage: signMessageEVM } = useSignMessage({
       message: challenge,
     });
 
@@ -94,7 +96,7 @@ export default function Home() {
     useEffect(() => {
       if(challenge != "" && flag == 0) { 
         if(network == "EVM Chains") {
-          signMessage();
+          signMessageEVM();
         }
         else if(network == "Bitcoin") {
           async function signMessageAsync() {
@@ -110,8 +112,28 @@ export default function Home() {
               else if(walletType == "Phantom"){
                 const message = new TextEncoder().encode(challenge);
                 const {signature} = await window.phantom.bitcoin.signMessage(address, message);
-                let res = new TextDecoder().decode(signature);
-                setBtcSignMSg(res);
+                const base64Signature = btoa(String.fromCharCode.apply(null, signature));
+                setBtcSignMSg(base64Signature);
+              } 
+              else if(walletType == "Xverse"){
+                console.log('-----xverse sign-----');
+                console.log(address);
+                console.log(challenge);
+                
+                const signMessageOptions = {
+                  payload: {
+                    network: {
+                      type: "Mainnet",
+                    },
+                    address: address,
+                    message: challenge,
+                  },
+                  onFinish: (response) => {
+                    setBtcSignMSg(response);
+                  },
+                  onCancel: () => console.log("Xverse Sign Message Canceled"),
+                };
+                await signMessage(signMessageOptions);  
               } 
             } catch (e) {
               console.log(e);

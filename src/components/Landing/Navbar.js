@@ -18,6 +18,7 @@ import {
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { signMessage } from 'sats-connect';
 
 import '../../css/drive3.css';
 import '../../css/animations.css';
@@ -117,8 +118,10 @@ export default function Navbar() {
         },
       },
       onFinish: (response) => {
-        console.log('---------------------');
-        console.log(response)
+        setAddress(response.addresses[0].address);
+        setSigned(1);
+        setWalletType("Xverse");
+        setShowModal(0);
       },
       onCancel: () => alert('Request canceled'),
       }
@@ -138,6 +141,7 @@ export default function Navbar() {
                         <div className='text-2xl font-bold text-left'>Select Wallet for Bitcoin</div>
                         <div className='flex flex-row items-center justify-center gap-5 p-3 mt-10 text-xl font-medium border border-gray-500 rounded-xl w-[350px]' onClick={() => connectToUnisat()}><img src="./img/unisat.png" className='w-12 h-12 rounded-xl'></img>Connect with Unisat</div>
                         <div className='flex flex-row items-center justify-center gap-5 p-3 mt-6 text-xl font-medium border border-gray-500 rounded-xl w-[350px]' onClick={() => connectToBitget()}><img src="./img/bitget.jpg" className='w-12 h-12 rounded-xl'></img>Connect with Bitget</div>
+                        <div className='flex flex-row items-center justify-center gap-5 p-3 mt-6 text-xl font-medium border border-gray-500 rounded-xl w-[350px]' onClick={() => connectToXverse()}><img src="./img/xverse.png" className='w-12 h-12 rounded-xl'></img>Connect with Xverse</div>
                         <div className='flex flex-row items-center justify-center gap-5 p-3 mt-6 text-xl font-medium border border-gray-500 rounded-xl w-[350px]' onClick={() => connectToPhantom()}><img src="./img/phantom.png" className='w-12 h-12 rounded-xl'></img>Connect with Phantom</div>
                     </div>        
                 </div>
@@ -250,7 +254,7 @@ export default function Navbar() {
                         Connect Wallet
                       </button>) : (<></>)}
                     {network == "Bitcoin" && signed == 1 && !(network == "Bitcoin" && address.includes("0x"))? 
-                      (<div className='px-5 py-1 w-[200px] text-white border border-white rounded-md'>{address.slice(0, 5) + ' ... ' + address.slice(address.length - 6, address.length - 1)}</div>) : (<></>)}
+                      (<div className='px-5 py-1 w-[200px] text-white border border-white rounded-md'>{address.slice(0, 5) + ' ... ' + address.slice(address.length - 6, address.length)}</div>) : (<></>)}
                 </div>
               </div>
             </div>
