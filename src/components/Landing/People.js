@@ -1,15 +1,15 @@
 import '../../css/animations.css';
 
 const wallets = [
-  {imgSrc: "./img/people1.png", title:"Kathryn Murphy", content: "Total Tokens: $58,000 USDT", index: "01"}, 
-  {imgSrc: "./img/people2.png", title:"Arlene McCoy", content:"Total Tokens: $58,000 USDT", index: "02"}, 
-  {imgSrc: "./img/people3.png", title:"Dianne Russell", content:"Total Tokens: $58,000 USDT", index: "03"}, 
-  {imgSrc: "./img/people4.png", title:"Jane Cooper", content: "Total Tokens: $58,000 USDT", index: "04"}, 
-  {imgSrc: "./img/people5.png", title:"Cameron Williamson", content:"Total Tokens: $58,000 USDT", index: "05"}, 
-  {imgSrc: "./img/people1.png", title:"Eleanor Pena", content:"Total Tokens: $58,000 USDT", index: "06"},
-  {imgSrc: "./img/people2.png", title:"Courtney Henry", content: "Total Tokens: $58,000 USDT", index: "07"}, 
-  {imgSrc: "./img/people3.png", title:"Kristin Watson", content:"Total Tokens: $58,000 USDT", index: "08"}, 
-  {imgSrc: "./img/people4.png", title:"Devon Lane", content:"Total Tokens: $58,000 USDT", index: "09"},
+  {imgSrc: "./img/people1.png", title:"Kathryn Murphy", content: "Total Tokens: 58,000 $DRV3", index: "01"}, 
+  {imgSrc: "./img/people2.png", title:"Arlene McCoy", content:"Total Tokens: 55,000 $DRV3", index: "02"}, 
+  {imgSrc: "./img/people3.png", title:"Dianne Russell", content:"Total Tokens: 51,000 $DRV3", index: "03"}, 
+  {imgSrc: "./img/people4.png", title:"Jane Cooper", content: "Total Tokens: 50,000 $DRV3", index: "04"}, 
+  {imgSrc: "./img/people5.png", title:"Cameron Williamson", content:"Total Tokens: 47,000 $DRV3", index: "05"}, 
+  {imgSrc: "./img/people1.png", title:"Eleanor Pena", content:"Total Tokens: 45,000 $DRV3", index: "06"},
+  {imgSrc: "./img/people2.png", title:"Courtney Henry", content: "Total Tokens: 30,000 $DRV3", index: "07"}, 
+  {imgSrc: "./img/people3.png", title:"Kristin Watson", content:"Total Tokens: 25,000 $DRV3", index: "08"}, 
+  {imgSrc: "./img/people4.png", title:"Devon Lane", content:"Total Tokens: 21,000 $DRV3", index: "09"},
 ];
 
 export default function People() {

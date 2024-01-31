@@ -16,9 +16,9 @@ export default function Benefits() {
         
         <div className="relative flex flex-col items-center justify-center gap-10 px-6 mx-auto max-w-7xl lg:px-8">
           <h2 className="max-w-2xl text-3xl font-bold text-center sm:text-5xl">
-            What are the Benefits you can get in Ethdrive
+            What are the Benefits you can get in Drive3
           </h2>
-          <div className="max-w-xl text-[#898CA9]">Qorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.</div>
+          <div className="max-w-xl text-[#898CA9]">We believe in revolutionizing industries, enhancing security, and providing unparalleled opportunities for our users.</div>
           <a href="https://t.me/ethdriveglobal" target="_blank"><button className='px-10 py-4 font-medium text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]'>Join Now</button></a>
           <div className="grid items-center max-w-lg grid-cols-1 mx-auto mt-10 gap-x-8 gap-y-10 sm:max-w-xl sm:gap-x-10 lg:mx-0 lg:max-w-none sm:grid-cols-3">   
             {

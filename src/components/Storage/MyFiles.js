@@ -286,6 +286,7 @@ export default function Home() {
 
           setUploadStatus("File Successfully Uploaded - Mid: " + response.data.Mid.slice(0, 15) + '...');
           setUploadFlag(1 - uploadFlag);
+          setShowModal(0);
         })
         .catch((error) => {
           console.error(error);
