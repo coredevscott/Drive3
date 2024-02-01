@@ -26,6 +26,7 @@ export default function Home() {
     const [showModal, setShowModal] = useState(0);  // Upload modal flag
     const [showShareModal, setShowShareModal] = useState(0);  // Share modal flag
     const [uploadFlag, setUploadFlag] = useState(0);  // Refresh table when upload finished
+    const [publicFlag, setPublicFlag] = useState(0);
 
     // Rest Api response
     const [uploadStatus, setUploadStatus] = useState("Please select file and press upload button to start file uploading");
@@ -38,7 +39,7 @@ export default function Home() {
     const [fileName, setFileName] = useState("Please Select File");
 
     // Global variables
-    const {authToken, setAuthToken, signed, setSigned, network, setNetwork, address, setAddress, walletType, setWalletType} = useContext(MyContext);
+    const {refreshStorage, setRefreshStorage, authToken, setAuthToken, signed, setSigned, network, setNetwork, address, setAddress, walletType, setWalletType} = useContext(MyContext);
 
     const { data, isError, isLoading, isSuccess, signMessage: signMessageEVM } = useSignMessage({
       message: challenge,
@@ -229,30 +230,40 @@ export default function Home() {
             console.error(error); 
         });
       }
-    }, [accessToken, uploadFlag]);
+    }, [accessToken, uploadFlag, publicFlag]);
 
     // Display File List
     useEffect(() => {
       var content = [];
 
       if(fileList != null && fileList.length != 0)
-        fileList.sort((a, b) => a.Size - b.Size);
+        fileList.sort((a, b) => {
+          const dateStr1 = a.ModTime;
+          const timestamp1 = new Date(dateStr1).getTime();
+
+          const dateStr2 = b.ModTime;
+          const timestamp2 = new Date(dateStr2).getTime();
+
+          return timestamp1 - timestamp2;        
+        });
 
       if(fileList != null){
         for(let i = 0; i < fileList.length; i ++) {
-          content = [...content, (
-            <div className='flex flex-row items-center w-full py-5'>
-              <div className='w-1/4 text-white'>{fileList[i].Name.length > 19 ? fileList[i].Name.slice(0, 19) + '...' : fileList[i].Name}</div>
-              <div className='w-1/4 text-white'>{fileList[i].ModTime}</div>
-              <div className='w-1/4 text-white'>{fileList[i].Mid.slice(0, 7) + '...' + fileList[i].Mid.slice(fileList[i].Mid.length - 7, fileList[i].Mid.length - 1)}</div>
-              <div className='w-1/4 text-white'>{(fileList[i].Size / 1000) + 'KB'}</div>
-              <div className='flex flex-row items-center justify-center w-1/4 gap-5 text-white'>
-                <div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>
-                <div onClick={() => handleFileDelete(fileList[i].ID)}><MdDelete className='w-6 h-6 text-white cursor-pointer'/></div>
-                <div><IoMdShare className='w-6 h-6 text-white cursor-pointer' onClick={() => handleFileShare({"mid": fileList[i].Mid, "name": fileList[i].Name})}/></div>
+          if((publicFlag == 0 && fileList[i].Public == false) || (publicFlag == 1 && fileList[i].Public == true)){
+            content = [...content, (
+              <div className='flex flex-row items-center w-full py-5'>
+                <div className='w-1/4 text-white'>{fileList[i].Name.length > 19 ? fileList[i].Name.slice(0, 19) + '...' : fileList[i].Name}</div>
+                <div className='w-1/4 text-white'>{fileList[i].ModTime}</div>
+                <div className='w-1/4 text-white'>{fileList[i].Mid.slice(0, 7) + '...' + fileList[i].Mid.slice(fileList[i].Mid.length - 7, fileList[i].Mid.length - 1)}</div>
+                <div className='w-1/4 text-white'>{(fileList[i].Size / 1024 / 1024) >= 1 ? (fileList[i].Size / 1024 / 1024).toFixed(0) + 'MB' : (fileList[i].Size / 1024).toFixed(0) + 'KB'}</div>
+                <div className='flex flex-row items-center justify-center w-1/4 gap-5 text-white'>
+                  <div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>
+                  <div onClick={() => handleFileDelete(fileList[i].ID)}><MdDelete className='w-6 h-6 text-white cursor-pointer'/></div>
+                  {publicFlag == 0 && (<div><IoMdShare className='w-6 h-6 text-white cursor-pointer' onClick={() => handleFileShare({"mid": fileList[i].Mid, "name": fileList[i].Name})}/></div>)}
+                </div>
               </div>
-            </div>
-          )];
+            )];
+          }
         }
       }
       
@@ -276,6 +287,10 @@ export default function Home() {
         const formData = new FormData();
         formData.append('file', file);
 
+        if(publicFlag == 1){
+          formData.append('public', true);
+        }
+
         setUploadStatus("Uploading " + file.name + " ...");
 
         axios.post('https://api.mefs.io:10000/produce/mefs/', formData, 
@@ -285,7 +300,10 @@ export default function Home() {
           console.log('-----file upload response-----');
           console.log(response);
 
-          setUploadStatus("File Successfully Uploaded - Mid: " + response.data.Mid.slice(0, 15) + '...');
+          setRefreshStorage(1 - refreshStorage);
+          setUploadStatus("Please select file and press upload button to start file uploading");
+          setFileName("Please Select File");
+          // setUploadStatus("File Successfully Uploaded - Mid: " + response.data.Mid.slice(0, 15) + '...');
           setUploadFlag(1 - uploadFlag);
           setShowModal(0);
         })
@@ -348,6 +366,7 @@ export default function Home() {
           console.log(response);
 
           setUploadFlag(1 - uploadFlag);
+          setRefreshStorage(1 - refreshStorage);
         })
         .catch((error) => {
             console.error(error);
@@ -386,19 +405,29 @@ export default function Home() {
 
       setFileName(file.name);
     }
+
+    const copyTextToClipboard = () => {
+      const textToCopy = sharedAddress;
+      const tempInput = document.createElement('textarea');
+      tempInput.value = textToCopy;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+    };
     
     return (
       <div className="relative py-12 text-white bg-transparent fadeIn sm:py-16">
         
         {/* Modal */}
-        {showModal == 1 ? (<div className='fixed fadeIn left-0 top-0 w-full h-full bg-transparent z-[1] backdrop-filter backdrop-blur-md'>
+        {showModal == 1 ? (<div className='fixed fadeIn left-0 top-0 w-full h-full bg-transparent z-[1000] backdrop-filter backdrop-blur-md'>
             <div className='relative flex flex-col items-center justify-center w-full h-full text-white'>
                 <div className='relative w-full mx-8 sm:w-[540px] bg-[#292B34] p-10 rounded-xl flex items-center flex-col justify-center'>
                     <XMarkIcon onClick={() => setShowModal(0)} className='absolute w-6 h-6 cursor-pointer top-3 right-3'/>
                     <div className='text-2xl font-bold text-left'>Upload File</div>
                     <div className='relative flex items-center justify-center p-4 mt-12 border-gray-500 border-dotted'>
                     {uploadStatus[0] == "U" ? (<input disabled type="file" id="file-input" className='z-10 opacity-0 w-[250px]'/>) : (<input type="file" id="file-input" onChange={displayFileName} className='z-10 opacity-0 w-[250px]'/>)}
-                    <div className='absolute z-0 left-0 top-0 py-2 font-medium text-white rounded-xl bg-transparent border border-white from-[#933FFE] w-full overflow-hidden to-[#18C8FF]'>{fileName}</div>
+                    <div className='absolute z-0 left-0 top-0 py-2 font-medium text-white rounded-xl bg-transparent border border-white from-[#933FFE] w-full to-[#18C8FF]'>{fileName.length >= 25 ? fileName.slice(0, 12) + ' ... ' + fileName.slice(fileName.length - 12, fileName.length) : fileName}</div>
                     </div>
                     <div className='flex flex-row items-center justify-center gap-5 mt-5'>
                       {
@@ -428,8 +457,11 @@ export default function Home() {
               <div className='relative w-full mx-8 sm:w-[540px] bg-[#292B34] p-10 rounded-xl flex items-center flex-col justify-center'>
                   <XMarkIcon onClick={() => setShowShareModal(0)} className='absolute w-6 h-6 cursor-pointer top-3 right-3'/>
                   <div className='text-2xl font-bold text-left'>File Share</div>
-                  <div className='max-w-md overflow-auto font-medium text-left mt-7 text-md'>{sharedAddress}</div>
-                  <button className='mt-7 px-7 py-2 font-medium text-white rounded-xl bg-transparent border border-white from-[#933FFE] w-[150px] to-[#18C8FF]' onClick={() => setShowShareModal(0)}>Close</button>
+                  <div className='max-w-lg overflow-hidden font-medium text-left mt-7 text-md'>{sharedAddress}</div>
+                  <div className='flex flex-row justify-center gap-5 mt-10'>
+                    <button className='px-7 py-2 font-medium text-white rounded-xl bg-transparent border border-white w-[150px]' onClick={() => setShowShareModal(0)}>Close</button>
+                    <button className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF] w-[150px]' onClick={() => copyTextToClipboard()}>Copy</button>
+                  </div>
               </div>        
           </div>
         </div>) : null}
@@ -439,10 +471,15 @@ export default function Home() {
             My Files
           </h2>
           <div className='flex flex-row justify-between w-full mt-10'>
-            <div className='flex flex-col gap-5 sm:flex-row'>
-              <button className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF]'>Private Files</button>
-              <button className='px-7 py-2 font-medium text-white rounded-xl bg-[#18C8FF] bg-opacity-20 hover:bg-opacity-30'>Public Files</button>
-            </div>
+            {publicFlag == 0 ? (<div className='flex flex-col gap-5 sm:flex-row'>
+              <button className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF]' onClick={() => setPublicFlag(0)}>Private Files</button>
+              <button className='px-7 py-2 font-medium text-white rounded-xl bg-[#18C8FF] bg-opacity-20 hover:bg-opacity-30' onClick={() => setPublicFlag(1)}>Public Files</button>
+            </div>) : 
+              (<div className='flex flex-col gap-5 sm:flex-row'>
+                <button className='px-7 py-2 font-medium text-white rounded-xl bg-[#18C8FF] bg-opacity-20 hover:bg-opacity-30' onClick={() => setPublicFlag(0)}>Private Files</button>
+                <button className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF] bg-opacity-20 hover:bg-opacity-30' onClick={() => setPublicFlag(1)}>Public Files</button>
+              </div>)
+            }
             <div className='flex flex-row gap-3 items-center text-[#B982FF] font-medium cursor-pointer mr-5' onClick={() => setShowModal(1)}>
               <LuUpload className='w-5 h-5'/>
               Upload

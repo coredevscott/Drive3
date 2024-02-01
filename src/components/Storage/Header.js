@@ -15,7 +15,7 @@ function classNames(...classes) {
 }
 
 export default function Header() {
-  const {authToken, setAuthToken, signed, setSigned, network, setNetwork, address, setAddress} = useContext(MyContext);
+  const {refreshStorage, setRefreshStorage, authToken, setAuthToken, signed, setSigned, network, setNetwork, address, setAddress} = useContext(MyContext);
   const [showModal, setShowModal] = useState(0);
   const [usedStorage, setUsedStorage] = useState(0);
 
@@ -43,7 +43,7 @@ export default function Header() {
           setUsedStorage(0);
       });
     }
-  }, [authToken]);
+  }, [authToken, refreshStorage]);
 
   return (
     <Disclosure as="nav" className="relative bg-transparent fadeIn">
@@ -72,7 +72,7 @@ export default function Header() {
                     <LuUserCircle2 className='w-5 h-5'/>
                     <p>{address.slice(0, 9) + '...' + address.slice(address.length - 8, address.length)}</p>
                   </div>
-                  <div className='mt-4'>{(usedStorage / 1024).toFixed(0)}KB/10GB</div>
+                  <div className='mt-4'>{(usedStorage / 1024 / 1024) >= 1 ? (usedStorage / 1024 / 1024).toFixed(0) + 'MB/10GB' : (usedStorage / 1024).toFixed(0) + 'KB/10GB'}</div>
                   <div className='mt-4 text-sm'>Current Version: 2.0</div>
                   <Link to='/'><div className='mt-4 text-sm font-semibold'>Log out</div></Link>
                 </div>) : (<div></div>)}

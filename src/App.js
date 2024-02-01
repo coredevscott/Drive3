@@ -12,9 +12,10 @@ const MyProvider = ({ children }) => {
   const [address, setAddress] = useState("");
   const [authToken, setAuthToken] = useState("");
   const [walletType, setWalletType] = useState("Unisat");
+  const [refreshStorage, setRefreshStorage] = useState(0);
   
   return (
-    <MyContext.Provider value={{ signed, setSigned, network, setNetwork, address, setAddress, authToken, setAuthToken, walletType, setWalletType}}>
+    <MyContext.Provider value={{ refreshStorage, setRefreshStorage, signed, setSigned, network, setNetwork, address, setAddress, authToken, setAuthToken, walletType, setWalletType}}>
       {children}
     </MyContext.Provider>
   );

@@ -45,7 +45,7 @@ export default function Navbar() {
   }, [account.address]);
 
   const connectToUnisat = async () => {
-    if (typeof window.unisat !== 'undefined') {
+    if (typeof window.unisat !== 'undefined' && window.unisat !== null) {
       try {
         let accounts = await window.unisat.requestAccounts();
         console.log('Unisat Wallet Connect Success!');
@@ -65,9 +65,9 @@ export default function Navbar() {
   };
 
   const connectToBitget = async () => {
-    const unisat = window.bitkeep.unisat;
+    if (typeof window.bitkeep !== 'undefined' && window.bitkeep !== null) {
+      const unisat = window.bitkeep.unisat;
 
-    if (typeof unisat !== 'undefined' && unisat !== null) {
       try {
         let accounts = await unisat.requestAccounts();
         console.log('Bigget Wallet Connect Success!');
@@ -123,10 +123,14 @@ export default function Navbar() {
         setWalletType("Xverse");
         setShowModal(0);
       },
-      onCancel: () => alert('Request canceled'),
+      onCancel: () => alert('Xverse Wallet Connect Failed'),
       }
-        
-    await getAddress(getAddressOptions);
+    
+    try{
+      await getAddress(getAddressOptions);
+    } catch(e) {
+      alert('Xverse Wallet is not installed');
+    }
   };
 
   const connectToOkx = async () => {
