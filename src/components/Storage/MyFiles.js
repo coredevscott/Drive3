@@ -27,6 +27,7 @@ export default function Home() {
     const [showShareModal, setShowShareModal] = useState(0);  // Share modal flag
     const [uploadFlag, setUploadFlag] = useState(0);  // Refresh table when upload finished
     const [publicFlag, setPublicFlag] = useState(0);
+    const [copyBtnText, setCopyBtnText] = useState("Copy");
 
     // Rest Api response
     const [uploadStatus, setUploadStatus] = useState("Please select file and press upload button to start file uploading");
@@ -244,7 +245,7 @@ export default function Home() {
           const dateStr2 = b.ModTime;
           const timestamp2 = new Date(dateStr2).getTime();
 
-          return timestamp1 - timestamp2;        
+          return timestamp2 - timestamp1;        
         });
 
       if(fileList != null){
@@ -257,9 +258,9 @@ export default function Home() {
                 <div className='w-1/4 text-white'>{fileList[i].Mid.slice(0, 7) + '...' + fileList[i].Mid.slice(fileList[i].Mid.length - 7, fileList[i].Mid.length - 1)}</div>
                 <div className='w-1/4 text-white'>{(fileList[i].Size / 1024 / 1024) >= 1 ? (fileList[i].Size / 1024 / 1024).toFixed(0) + 'MB' : (fileList[i].Size / 1024).toFixed(0) + 'KB'}</div>
                 <div className='flex flex-row items-center justify-center w-1/4 gap-5 text-white'>
-                  <div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>
+                  {publicFlag == 0 && (<div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>)}
                   <div onClick={() => handleFileDelete(fileList[i].ID)}><MdDelete className='w-6 h-6 text-white cursor-pointer'/></div>
-                  {publicFlag == 0 && (<div><IoMdShare className='w-6 h-6 text-white cursor-pointer' onClick={() => handleFileShare({"mid": fileList[i].Mid, "name": fileList[i].Name})}/></div>)}
+                  {publicFlag == 1 && (<div><IoMdShare className='w-6 h-6 text-white cursor-pointer' onClick={() => handleFileShare({"mid": fileList[i].Mid, "name": fileList[i].Name})}/></div>)}
                 </div>
               </div>
             )];
@@ -392,6 +393,7 @@ export default function Home() {
           console.log(response);
 
           setSharedAddress(response.data); 
+          setCopyBtnText("Copy");
           setShowShareModal(1);
         })
         .catch((error) => {
@@ -414,6 +416,7 @@ export default function Home() {
       tempInput.select();
       document.execCommand('copy');
       document.body.removeChild(tempInput);
+      setCopyBtnText("Copied");
     };
     
     return (
@@ -460,7 +463,7 @@ export default function Home() {
                   <div className='max-w-lg overflow-hidden font-medium text-left mt-7 text-md'>{sharedAddress}</div>
                   <div className='flex flex-row justify-center gap-5 mt-10'>
                     <button className='px-7 py-2 font-medium text-white rounded-xl bg-transparent border border-white w-[150px]' onClick={() => setShowShareModal(0)}>Close</button>
-                    <button className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF] w-[150px]' onClick={() => copyTextToClipboard()}>Copy</button>
+                    <button className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF] w-[150px]' onClick={() => copyTextToClipboard()}>{copyBtnText}</button>
                   </div>
               </div>        
           </div>

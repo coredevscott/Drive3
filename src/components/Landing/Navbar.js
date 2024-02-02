@@ -224,12 +224,12 @@ export default function Navbar() {
                                             );
                                         }
                                         return (
-                                            <div className='flex gap-6 px-2 text-white border rounded-md'>
+                                            <div className={chain.hasIcon ? 'flex gap-6 px-2 text-white border rounded-md' : 'flex gap-6 px-2 py-[7px] text-white border rounded-md'}>
                                                 {/* <button className="px-5 py-[8px] text-white rounded-md bg-gradient-to-r from-[#933FFE] to-[#18C8FF]" onClick={openAccountModal} type="button">
                                                     Disconnect Wallet
                                                 </button> */}
-                                                
-                                                <div className="flex gap-6">
+                                                {!chain.iconUrl ? (<div>{chain.name} does not support</div>) :
+                                                  (<div className="flex gap-6">
                                                   <button
                                                       onClick={openChainModal}
                                                       className='flex items-center'
@@ -261,8 +261,10 @@ export default function Navbar() {
                                                           : ''} */}
                                                       Disconnect
                                                   </button>
-                                              </div>
+                                                  </div>)
+                                                }
                                             </div>
+                                            // <div className='px-5 py-[6px] w-[200px] text-white border border-white rounded-md'>{address.slice(0, 5) + ' ... ' + address.slice(address.length - 6, address.length)}</div>
                                         );
                                     })()}
                                 </div>
@@ -276,7 +278,7 @@ export default function Navbar() {
                         Connect Wallet
                       </button>) : (<></>)}
                     {network == "Bitcoin" && signed == 1 && !(network == "Bitcoin" && address.includes("0x"))? 
-                      (<div className='px-5 py-1 w-[200px] text-white border border-white rounded-md'>{address.slice(0, 5) + ' ... ' + address.slice(address.length - 6, address.length)}</div>) : (<></>)}
+                      (<div className='px-5 py-[6px] w-[200px] text-white border border-white rounded-md'>{address.slice(0, 5) + ' ... ' + address.slice(address.length - 6, address.length)}</div>) : (<></>)}
                 </div>
               </div>
             </div>
