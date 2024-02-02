@@ -16,7 +16,6 @@ export default function NetworkSelect() {
   const {signed, setSigned, network, setNetwork, address, setAddress} = useContext(MyContext);
 
   useEffect(() => {
-    setSigned(0);
     setNetwork(selected.name);
   }, [selected]);
 
