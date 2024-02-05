@@ -20,6 +20,16 @@ export default function Header() {
   const [usedStorage, setUsedStorage] = useState(0);
 
   useEffect(() => {
+    window.onclick = function(event) {
+      var modal = document.getElementById("myModal");
+
+      if (event.target == modal) {
+        setShowModal(0);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     if(signed == 1 && authToken != "") {
       console.log('-----query file storage request-----');
       console.log(authToken);
@@ -75,7 +85,8 @@ export default function Header() {
                   <div className='mt-4'>{(usedStorage / 1024 / 1024) >= 1 ? (usedStorage / 1024 / 1024).toFixed(0) + 'MB/10GB' : (usedStorage / 1024).toFixed(0) + 'KB/10GB'}</div>
                   <div className='mt-4 text-sm'>Current Version: 2.0</div>
                   <Link to='/'><div className='mt-4 text-sm font-semibold'>Log out</div></Link>
-                </div>) : (<div></div>)}
+                </div>) : (<div></div>)}      
+              {showModal == 1 && (<div id="myModal" class="modal"></div>)}   
             </div>
           </div>
         </>
