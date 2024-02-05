@@ -25,7 +25,7 @@ export default function Purpose() {
                       <br></br>7. File Distribution and Storage
                       <br></br>8. Retrieval and Access
                     </p>
-                    <a href="https://t.me/ethdriveglobal" target="_blank"><button className='px-8 py-3 mt-6 text-sm font-medium text-white bg-transparent border border-white rounded-md w-36'>Read More</button></a>
+                    <a href="https://ethdrive.net/docs/#/EthDrive" target="_blank"><button className='px-8 py-3 mt-6 text-sm font-medium text-white bg-transparent border border-white rounded-md w-36'>Read More</button></a>
                 </div>
             </div>
         </div>
