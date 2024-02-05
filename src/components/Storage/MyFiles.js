@@ -26,9 +26,10 @@ export default function Home() {
     const [uploadFlag, setUploadFlag] = useState(0);  // Refresh table when upload finished
     const [publicFlag, setPublicFlag] = useState(0);
     const [copyBtnText, setCopyBtnText] = useState("Copy");
+    const [spinModal, setSpinModal] = useState(0);
 
     // Rest Api response
-    const [uploadStatus, setUploadStatus] = useState("Please select file and press upload button to start file uploading");
+    const [uploadStatus, setUploadStatus] = useState("Waiting to Select File");
     const [challenge, setChallenge] = useState("");
     const [accessToken, setAccessToken] = useState("");
     const [refreshToken, setRefreshToken] = useState("");
@@ -64,6 +65,8 @@ export default function Home() {
           console.log('-----challenge request-----');
           console.log(address);
 
+          setSpinModal(1);
+
           if(network == "EVM Chains"){
             axios.get('https://api.mefs.io:10000/produce/challenge?address=' + address + '&' + 'chainid=1',
               {headers: request_headers}
@@ -73,9 +76,11 @@ export default function Home() {
               console.log(response.data);
               
               setChallenge(response.data);
+              setSpinModal(0);
             })
             .catch((error) => {
                 console.error(error);
+                setSpinModal(0);
             });
           }
           else if(network == "Bitcoin") {
@@ -84,9 +89,11 @@ export default function Home() {
             )
             .then((response) => { 
               setChallenge(response.data);
+              setSpinModal(0);
             })
             .catch((error) => {
                 console.error(error);
+                setSpinModal(0);
             });
           }
         }
@@ -215,6 +222,8 @@ export default function Home() {
         'Authorization': 'Bearer ' + accessToken
       };
 
+      setSpinModal(1);
+
       if(accessToken != "") {
         axios.get('https://api.mefs.io:10000/produce/mefs/listobjects',
           {headers: request_headers}
@@ -224,9 +233,11 @@ export default function Home() {
           console.log(response);
 
           setFileList(response.data.Objects);
+          setSpinModal(0);
         })
         .catch((error) => {
             console.error(error); 
+            setSpinModal(0);
         });
       }
     }, [accessToken, uploadFlag, publicFlag]);
@@ -291,7 +302,8 @@ export default function Home() {
           formData.append('public', true);
         }
 
-        setUploadStatus("Uploading " + file.name + " ...");
+        // setUploadStatus("Uploading " + file.name + " ...");
+        setUploadStatus("Uploading");
 
         axios.post('https://api.mefs.io:10000/produce/mefs/', formData, 
           {headers: request_headers}
@@ -301,7 +313,7 @@ export default function Home() {
           console.log(response);
 
           setRefreshStorage(1 - refreshStorage);
-          setUploadStatus("Please select file and press upload button to start file uploading");
+          setUploadStatus("Waiting to Select File");
           setFileName("Please Select File");
           // setUploadStatus("File Successfully Uploaded - Mid: " + response.data.Mid.slice(0, 15) + '...');
           setUploadFlag(1 - uploadFlag);
@@ -354,23 +366,27 @@ export default function Home() {
       console.log('-----file delete request-----');
       console.log(fileId);
 
+      setSpinModal(1);
+
       const request_headers = {
         'Authorization': 'Bearer ' + accessToken
       };
 
-        axios.get('https://api.mefs.io:10000/produce/mefs/delete?id=' + fileId,
-          {headers: request_headers}
-        )
-        .then((response) => {
-          console.log('-----file delete response-----');
-          console.log(response);
+      axios.get('https://api.mefs.io:10000/produce/mefs/delete?id=' + fileId,
+        {headers: request_headers}
+      )
+      .then((response) => {
+        console.log('-----file delete response-----');
+        console.log(response);
 
-          setUploadFlag(1 - uploadFlag);
-          setRefreshStorage(1 - refreshStorage);
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+        setUploadFlag(1 - uploadFlag);
+        setRefreshStorage(1 - refreshStorage);
+        setSpinModal(0);
+      })
+      .catch((error) => {
+          console.error(error);
+          setSpinModal(0);
+      });
     };
 
     // Step 7. File Share
@@ -383,22 +399,26 @@ export default function Home() {
         'Content-Type': 'application/json',
       };
 
-        axios.post('https://api.mefs.io:10000/produce/share',
-          {"mid": fileData.mid, "name": fileData.name, "type": 0},
-          {headers: request_headers}
-        )
-        .then((response) => {
-          console.log('-----file share response-----');
-          console.log(response);
+      setSpinModal(1);
 
-          setSharedAddress(response.data); 
-          setCopyBtnText("Copy");
-          setShowShareModal(1);
-          setUploadFlag(1 - uploadFlag);
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+      axios.post('https://api.mefs.io:10000/produce/share',
+        {"mid": fileData.mid, "name": fileData.name, "type": 0},
+        {headers: request_headers}
+      )
+      .then((response) => {
+        console.log('-----file share response-----');
+        console.log(response);
+
+        setSharedAddress(response.data); 
+        setCopyBtnText("Copy");
+        setShowShareModal(1);
+        setUploadFlag(1 - uploadFlag);
+        setSpinModal(0);
+      })
+      .catch((error) => {
+          console.error(error);
+          setSpinModal(0);
+      });
     };
 
     // Step 7. Delete Share
@@ -406,35 +426,40 @@ export default function Home() {
       console.log('-----file share delete request-----');
       console.log(fileData);
 
+      setSpinModal(1);
+
       const request_headers = {
         'Authorization': 'Bearer ' + accessToken,
         'Content-Type': 'application/json',
       };
 
-        axios.post('https://api.mefs.io:10000/produce/share',
-          {"mid": fileData.mid, "name": fileData.name, "type": 0},
+      axios.post('https://api.mefs.io:10000/produce/share',
+        {"mid": fileData.mid, "name": fileData.name, "type": 0},
+        {headers: request_headers}
+      )
+      .then((response) => {
+        console.log('-----file share id request response-----');
+        console.log(response.data);
+
+        axios.delete('https://api.mefs.io:10000/produce/share/' + response.data.slice(23, response.data.length),
           {headers: request_headers}
         )
         .then((response) => {
-          console.log('-----file share id request response-----');
-          console.log(response.data);
+          console.log('-----file share delete response-----');
+          console.log(response);
 
-          axios.delete('https://api.mefs.io:10000/produce/share/' + response.data.slice(23, response.data.length),
-            {headers: request_headers}
-          )
-          .then((response) => {
-            console.log('-----file share delete response-----');
-            console.log(response);
-
-            setUploadFlag(1 - uploadFlag);
-          })
-          .catch((error) => {
-              console.error(error);
-          });
+          setUploadFlag(1 - uploadFlag);
+          setSpinModal(0);
         })
         .catch((error) => {
             console.error(error);
+            setSpinModal(0);
         });
+      })
+      .catch((error) => {
+          console.error(error);
+          setSpinModal(0);
+      });
     };
 
     const displayFileName = () => {
@@ -457,6 +482,11 @@ export default function Home() {
     
     return (
       <div className="relative py-12 text-white bg-transparent fadeIn sm:py-16">
+        {spinModal == 1 && (<div className='fixed fadeIn left-0 top-0 w-full h-full bg-transparent z-[1] backdrop-filter backdrop-blur-md'>
+          <div className='relative flex flex-row items-center justify-center w-full h-full gap-5 text-2xl text-white'>
+            <div class="loader"></div>Please Wait
+          </div>
+        </div>)}
         
         {/* Modal */}
         {showModal == 1 ? (<div className='fixed fadeIn left-0 top-0 w-full h-full bg-transparent z-[1000] backdrop-filter backdrop-blur-md'>
@@ -472,7 +502,7 @@ export default function Home() {
                       {
                         uploadStatus != "Uploading" ? (<div className='text-sm text-white sm:text-md'>
                           {uploadStatus}
-                        </div>) : (<i className="fa fa-spinner fa-spin"></i>)
+                        </div>) : (<div className='flex flex-row items-center justify-center gap-2'><i className="fa fa-spinner fa-spin"></i>Uploading</div>)
                       }
                     </div>
                     {/* <div className='bg-[#444754] border border-dotted border-[#979797] rounded-xl h-[100px] mt-10 w-full text-[#898CA9] justify-center items-center flex'>Drag and drop files here</div> */}
