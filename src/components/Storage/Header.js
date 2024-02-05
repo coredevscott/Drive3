@@ -61,8 +61,8 @@ export default function Header() {
         <>
           <div className="relative px-2 py-4 mx-auto cursor-pointer max-w-7xl sm:px-6 lg:px-8">
             <div className="relative flex items-center justify-between h-16">
-              <div className="flex items-center justify-center flex-1 sm:items-stretch sm:justify-between">
-              <Link to='/'><div className="flex-row items-center flex-shrink-0 hidden gap-4 sm:flex">
+              <div className="flex items-center justify-between flex-1 mx-5 sm:items-stretch">
+                <Link to='/'><div className="flex flex-row items-center flex-shrink-0 gap-4">
                   {/* <a href="/"> */}
                     <img
                       className="w-auto cursor-pointer h-7"

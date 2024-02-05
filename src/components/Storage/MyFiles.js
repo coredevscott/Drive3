@@ -473,17 +473,17 @@ export default function Home() {
           <h2 className="text-3xl font-bold sm:text-4xl">
             My Files
           </h2>
-          <div className='flex flex-row justify-between w-full mt-10'>
-            {publicFlag == 0 ? (<div className='flex flex-col gap-5 sm:flex-row'>
+          <div className='flex flex-col justify-between w-full mt-10 sm:flex-row'>
+            {publicFlag == 0 ? (<div className='flex flex-row justify-center gap-5'>
               <button className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF]' onClick={() => setPublicFlag(0)}>Private Files</button>
               <button className='px-7 py-2 font-medium text-white rounded-xl bg-[#18C8FF] bg-opacity-20 hover:bg-opacity-30' onClick={() => setPublicFlag(1)}>Public Files</button>
             </div>) : 
-              (<div className='flex flex-col gap-5 sm:flex-row'>
+              (<div className='flex flex-row justify-center gap-5'>
                 <button className='px-7 py-2 font-medium text-white rounded-xl bg-[#18C8FF] bg-opacity-20 hover:bg-opacity-30' onClick={() => setPublicFlag(0)}>Private Files</button>
                 <button className='px-7 py-2 font-medium text-white rounded-xl bg-gradient-to-r from-[#933FFE] to-[#18C8FF] bg-opacity-20 hover:bg-opacity-30' onClick={() => setPublicFlag(1)}>Public Files</button>
               </div>)
             }
-            <div className='flex flex-row gap-3 items-center text-[#B982FF] font-medium cursor-pointer mr-5' onClick={() => setShowModal(1)}>
+            <div className='justify-center sm:mt-0 mt-10 flex flex-row gap-3 items-center text-[#B982FF] font-medium cursor-pointer mr-5' onClick={() => setShowModal(1)}>
               <LuUpload className='w-5 h-5'/>
               Upload
             </div>

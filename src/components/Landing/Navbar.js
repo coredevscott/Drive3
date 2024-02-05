@@ -169,21 +169,20 @@ export default function Navbar() {
                 </div>
             </div>) : null}
             <div className="relative flex items-center justify-between h-16">
-              <div className="flex items-center justify-center flex-1 sm:items-stretch sm:justify-between">
-                <div className="flex-row items-center flex-shrink-0 hidden gap-4 sm:flex">
+              <div className="flex flex-col items-center justify-center flex-1 sm:flex-row sm:items-stretch sm:justify-between">
+                <div className="flex flex-row items-center flex-shrink-0 gap-4 mt-20 sm:mt-0">
                   {/* <a href="/"> */}
                     <img
                       className="w-auto cursor-pointer h-7"
                       src="./img/drive3.png"
                       alt="My logo"
                     />
-                    <div className='text-2xl font-semibold text-white'>Drive 3</div>
+                    <div className= 'text-2xl font-semibold text-white'>Drive 3</div>
                   {/* </a> */}
+                  <a href="https://ethdrive.net/docs/#/EthDrive" target='_blank'><div className='px-2 py-1 ml-4 text-white border-white rounded-md'>Docs</div></a>
                 </div>
-                <div className='flex flex-col items-center mt-10 font-medium sm:flex-row sm:mt-0 gap-7'>
-                    <a href="https://ethdrive.net/docs/#/EthDrive" target='_blank'><div className='hidden px-2 py-1 text-white border-white rounded-md sm:block'>Docs</div></a>
+                <div className='flex flex-row items-center mt-10 font-medium sm:mt-0 gap-7'>
                     <NetworkSelect />
-
                     {/* EVM chains - RainbowKit */}
                     {network == "EVM Chains" ?
                       (<ConnectButton.Custom>
@@ -254,13 +253,13 @@ export default function Navbar() {
                                                       {chain.name}
                                                   </button>
 
-                                                  <button onClick={openAccountModal} type="button">
-                                                      {/* {account.displayName}
+                                                  {/* <button onClick={openAccountModal} type="button">
+                                                      {account.displayName}
                                                       {account.displayBalance
                                                           ? ` (${account.displayBalance})`
-                                                          : ''} */}
+                                                          : ''} 
                                                       Disconnect
-                                                  </button>
+                                                  </button> */}
                                                   </div>)
                                                 }
                                             </div>
