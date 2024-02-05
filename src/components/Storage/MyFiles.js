@@ -394,6 +394,7 @@ export default function Home() {
           setSharedAddress(response.data); 
           setCopyBtnText("Copy");
           setShowShareModal(1);
+          setUploadFlag(1 - uploadFlag);
         })
         .catch((error) => {
             console.error(error);
