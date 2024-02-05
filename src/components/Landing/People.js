@@ -6,10 +6,10 @@ const wallets = [
   {imgSrc: "./img/people3.png", title:"Dianne Russell", content:"Total Tokens: 51,000 $DRV3", index: "03"}, 
   {imgSrc: "./img/people4.png", title:"Jane Cooper", content: "Total Tokens: 50,000 $DRV3", index: "04"}, 
   {imgSrc: "./img/people5.png", title:"Cameron Williamson", content:"Total Tokens: 47,000 $DRV3", index: "05"}, 
-  {imgSrc: "./img/people1.png", title:"Eleanor Pena", content:"Total Tokens: 45,000 $DRV3", index: "06"},
-  {imgSrc: "./img/people2.png", title:"Courtney Henry", content: "Total Tokens: 30,000 $DRV3", index: "07"}, 
-  {imgSrc: "./img/people3.png", title:"Kristin Watson", content:"Total Tokens: 25,000 $DRV3", index: "08"}, 
-  {imgSrc: "./img/people4.png", title:"Devon Lane", content:"Total Tokens: 21,000 $DRV3", index: "09"},
+  {imgSrc: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", title:"Eleanor Pena", content:"Total Tokens: 45,000 $DRV3", index: "06"},
+  {imgSrc: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", title:"Courtney Henry", content: "Total Tokens: 30,000 $DRV3", index: "07"}, 
+  {imgSrc: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", title:"Kristin Watson", content:"Total Tokens: 25,000 $DRV3", index: "08"}, 
+  {imgSrc: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", title:"Devon Lane", content:"Total Tokens: 21,000 $DRV3", index: "09"},
 ];
 
 export default function People() {
@@ -30,7 +30,7 @@ export default function People() {
                     <div className="flex flex-col gap-5 text-white hover:translate-y-[-10px] transition-transform duration-700 bg-[#161619] p-7 justify-center rounded-xl">
                         <div className='flex flex-row items-center gap-5'>
                           <img
-                          className="object-contain w-auto col-span-2 max-h-16 lg:col-span-1"
+                          className="object-contain w-auto col-span-2 rounded-full max-h-16 lg:col-span-1"
                           src={item.imgSrc}
                           alt="Transistor"
                           />
