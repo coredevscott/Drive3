@@ -258,7 +258,7 @@ export default function Home() {
                 <div className='w-1/4 text-white'>{fileList[i].Mid.slice(0, 7) + '...' + fileList[i].Mid.slice(fileList[i].Mid.length - 7, fileList[i].Mid.length - 1)}</div>
                 <div className='w-1/4 text-white'>{(fileList[i].Size / 1024 / 1024) >= 1 ? (fileList[i].Size / 1024 / 1024).toFixed(0) + 'MB' : (fileList[i].Size / 1024).toFixed(0) + 'KB'}</div>
                 <div className='flex flex-row items-center justify-center w-1/4 gap-5 text-white'>
-                  {publicFlag == 0 && (<div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>)}
+                  <div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>
                   <div onClick={() => handleFileDelete(fileList[i].ID)}><MdDelete className='w-6 h-6 text-white cursor-pointer'/></div>
                   {publicFlag == 1 && (<div><IoMdShare className='w-6 h-6 text-white cursor-pointer' onClick={() => handleFileShare({"mid": fileList[i].Mid, "name": fileList[i].Name})}/></div>)}
                 </div>
