@@ -8,14 +8,12 @@ import { FiGithub } from "react-icons/fi";
 import { useEffect, useState } from 'react';
 import { MdDelete } from "react-icons/md";
 import { IoMdShare } from "react-icons/io";
-
 import { signMessage } from 'sats-connect'
-
 import { XMarkIcon } from '@heroicons/react/24/outline'
+import { ImCancelCircle } from "react-icons/im";
+
 import axios from 'axios';
-
 import { useSignMessage } from 'wagmi'
-
 import { useContext } from 'react'
 import MyContext from '../../MyContext';
 
@@ -261,6 +259,7 @@ export default function Home() {
                   <div onClick={() => handleDownload(fileList[i].Name, fileList[i].Mid)}><FaDownload className='w-5 h-5 text-white cursor-pointer'/></div>
                   <div onClick={() => handleFileDelete(fileList[i].ID)}><MdDelete className='w-6 h-6 text-white cursor-pointer'/></div>
                   {publicFlag == 0 && (<div><IoMdShare className='w-6 h-6 text-white cursor-pointer' onClick={() => handleFileShare({"mid": fileList[i].Mid, "name": fileList[i].Name})}/></div>)}
+                  {publicFlag == 0 && fileList[i].Shared == true && (<div onClick={() => handleDeleteShare({"mid": fileList[i].Mid, "name": fileList[i].Name})}><ImCancelCircle className='w-6 h-6 text-white cursor-pointer'/></div>)}
                 </div>
               </div>
             )];
@@ -395,6 +394,42 @@ export default function Home() {
           setSharedAddress(response.data); 
           setCopyBtnText("Copy");
           setShowShareModal(1);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+    };
+
+    // Step 7. Delete Share
+    const handleDeleteShare = (fileData) => {
+      console.log('-----file share delete request-----');
+      console.log(fileData);
+
+      const request_headers = {
+        'Authorization': 'Bearer ' + accessToken,
+        'Content-Type': 'application/json',
+      };
+
+        axios.post('https://api.mefs.io:10000/produce/share',
+          {"mid": fileData.mid, "name": fileData.name, "type": 0},
+          {headers: request_headers}
+        )
+        .then((response) => {
+          console.log('-----file share id request response-----');
+          console.log(response.data);
+
+          axios.delete('https://api.mefs.io:10000/produce/share/' + response.data.slice(23, response.data.length),
+            {headers: request_headers}
+          )
+          .then((response) => {
+            console.log('-----file share delete response-----');
+            console.log(response);
+
+            setUploadFlag(1 - uploadFlag);
+          })
+          .catch((error) => {
+              console.error(error);
+          });
         })
         .catch((error) => {
             console.error(error);
