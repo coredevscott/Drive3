@@ -163,6 +163,12 @@ export default function Home() {
       }
     }, [challenge]);
 
+    // If EVM wallet sign canceled
+    useEffect(() => {
+      if(isError == true)
+        window.location.href = "/";
+    }, [isError]);
+
     // Step 3. Get signature
     useEffect(() => {
       if(isSuccess == true) { // EVM Chain Wallet Sign
@@ -327,7 +333,7 @@ export default function Home() {
         .catch((error) => {
           console.error(error);
 
-          setUploadStatus("File Upload Failed, please select again");
+          setUploadStatus("File upload failed, duplicated file name.");
           setUploadFlag(1 - uploadFlag);
         });
       }
