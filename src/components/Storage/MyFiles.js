@@ -148,7 +148,12 @@ export default function Home() {
                 setBtcSignMSg(result);
               } 
             } catch (e) {
+              console.log('-----wallet sign message reject-----');
               console.log(e);
+
+              if(e.code == "4001"){
+                window.location.href = "/";
+              }
             }
           }
 
@@ -236,7 +241,7 @@ export default function Home() {
           setSpinModal(0);
         })
         .catch((error) => {
-            console.error(error); 
+            console.error(error);
             setSpinModal(0);
         });
       }
