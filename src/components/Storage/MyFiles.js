@@ -196,6 +196,7 @@ export default function Home() {
         })
         .catch((error) => {
             console.error(error);
+            window.location.href = "/";
         });
       }
       else if(btcSignMsg != "") { //Unisat & Bitget wallet Sign
@@ -223,6 +224,7 @@ export default function Home() {
         })
         .catch((error) => {
             console.error(error);
+            window.location.href = "/";
         });
       }
     }, [isSuccess, btcSignMsg]);
