@@ -273,7 +273,7 @@ export default function Home() {
           if((publicFlag == 0 && fileList[i].Public == false) || (publicFlag == 1 && fileList[i].Public == true)){
             content = [...content, (
               <div className='flex flex-row items-center w-full py-5'>
-                <div className='w-1/4 text-white'>{fileList[i].Name.length > 19 ? fileList[i].Name.slice(0, 19) + '...' : fileList[i].Name}</div>
+                <div className='w-1/4 text-white'>{fileList[i].Name.length > 12 ? fileList[i].Name.slice(0, 6) + ' ... '  + fileList[i].Name.slice(fileList[i].Name.length - 6, fileList[i].Name.length) : fileList[i].Name}</div>
                 <div className='w-1/4 text-white'>{fileList[i].ModTime}</div>
                 <div className='w-1/4 text-white'>{fileList[i].Mid.slice(0, 7) + '...' + fileList[i].Mid.slice(fileList[i].Mid.length - 7, fileList[i].Mid.length - 1)}</div>
                 <div className='w-1/4 text-white'>{(fileList[i].Size / 1024 / 1024) >= 1 ? (fileList[i].Size / 1024 / 1024).toFixed(0) + 'MB' : (fileList[i].Size / 1024).toFixed(0) + 'KB'}</div>
