@@ -422,7 +422,7 @@ export default function Home() {
         console.log('-----file share response-----');
         console.log(response);
 
-        setSharedAddress(response.data); 
+        setSharedAddress(response.data.shareDowloadLink); 
         setCopyBtnText("Copy");
         setShowShareModal(1);
         setUploadFlag(1 - uploadFlag);
